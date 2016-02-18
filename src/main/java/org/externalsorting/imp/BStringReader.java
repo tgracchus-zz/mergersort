@@ -8,66 +8,84 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 
 /**
+ * Not Thread Safe Class !!!
  * Created by ulises.olivenza on 18/02/16.
  */
 public class BStringReader {
 
+    private final static int DEFAULT_BUFFER_SIZE = 120;
+
     private final FileChannel fc;
-    private long filePosition = 0;
+    private final int bufferSize;
+    private long position = 0;
+    private long size;
 
-    private MappedByteBuffer file;
-
-    private char c = Character.MIN_VALUE;
-
-    private boolean eol = false;
-
-    private CharBuffer buffer;
-    private final static int BUFFER_SIZE_MAX = 1000;
     private final CharsetDecoder charsetDecoder;
+    private MappedByteBuffer file;
+    private CharBuffer buffer;
+
+    public BStringReader(FileChannel fc, Charset charset, int bufferSize) {
+        this.fc = fc;
+        this.charsetDecoder = charset.newDecoder();
+        this.bufferSize = bufferSize;
+    }
 
     public BStringReader(FileChannel fc, Charset charset) {
         this.fc = fc;
         this.charsetDecoder = charset.newDecoder();
+        this.bufferSize = DEFAULT_BUFFER_SIZE;
+    }
+
+    public BStringReader(FileChannel fc) {
+        this.fc = fc;
+        this.charsetDecoder = Charset.defaultCharset().newDecoder();
+        this.bufferSize = DEFAULT_BUFFER_SIZE;
     }
 
     public BString readLine() throws IOException {
-        file = fc.map(FileChannel.MapMode.READ_ONLY, filePosition, fc.size());
-        buffer = CharBuffer.allocate(BUFFER_SIZE_MAX);
-        CharBuffer charFile = charsetDecoder.decode(file);
+        CharBuffer line = CharBuffer.allocate(bufferSize);
+        fillBuffer();
+        char c;
 
-        for (long i = filePosition; i < charFile.limit(); i++) {
-            c = charFile.get();
-
-            // Update general file position
-            filePosition = i;
+        while (size > 0) {
+            c = buffer.get();
+            line.put(c);
+            position++;
 
             // Check for eol
             if ((c == '\n') || (c == '\r')) {
-                eol = true;
-            } else {
-                // Check buffer
-                if (buffer.position() >= BUFFER_SIZE_MAX) {
-                    expandBuffer();
-                }
-                buffer.append(c);
+                return new BString(trimLine(line));
             }
 
-            // Check if end line
-            if (eol) {
-                eol = false;
-                // return line
-                CharBuffer newString = CharBuffer.allocate(buffer.position());
-                newString.put(buffer.array(), 0, buffer.position());
-                return new BString(newString.array());
+            if (buffer.remaining() == 0) {
+                fillBuffer();
+                line = expandLine(line);
             }
 
         }
 
         return null;
+
+
     }
 
-    private void expandBuffer() {
-        buffer.limit(buffer.limit() + BUFFER_SIZE_MAX);
+    private void fillBuffer() throws IOException {
+        long edgeSize = fc.size() - position;
+        size = (edgeSize < bufferSize) ? edgeSize : bufferSize;
+        file = fc.map(FileChannel.MapMode.READ_ONLY, position, size);
+        buffer = charsetDecoder.decode(file);
     }
+
+
+    private CharBuffer expandLine(CharBuffer line) {
+        CharBuffer newCharBuffer = CharBuffer.allocate(line.limit() + bufferSize);
+        return newCharBuffer.put(line.array(), 0, line.limit());
+    }
+
+    private char[] trimLine(CharBuffer line) {
+        CharBuffer newCharBuffer = CharBuffer.allocate(line.position() - 1);
+        return newCharBuffer.put(line.array(), 0, line.position() - 1).array();
+    }
+
 
 }
