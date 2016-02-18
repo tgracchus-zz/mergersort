@@ -5,10 +5,10 @@ import org.externalsorting.mergesort.TextChunk;
 /**
  * Created by ulises on 17/02/16.
  */
-public class QuickSort implements SortingAlgorithm {
+public class MergeSort implements SortingAlgorithm {
 
     @Override
-    public void sort(TextChunk textChunk) {
-
+    public TextChunk sort(TextChunk textChunk) {
+        return null;
     }
 }
