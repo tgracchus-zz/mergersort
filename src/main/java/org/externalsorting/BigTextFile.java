@@ -27,7 +27,7 @@ public interface BigTextFile {
     String toAbsolutePath();
 
 
-    List<TextChunk> chunks();
+    Stream<TextChunk> chunks();
 
     int passes();
 }
