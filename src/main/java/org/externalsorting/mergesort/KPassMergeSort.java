@@ -39,7 +39,7 @@ public class KPassMergeSort implements ExSortingAlgorithm {
 
         //Classify chunks by groupNumber and reduce
         return textChunksList.stream()
-                .collect(Collectors.groupingByConcurrent(TextChunk::gropNumber))
+                .collect(Collectors.groupingByConcurrent(TextChunk::chunkgroup))
                 .values().stream()
                 .map(textChunks ->
                         merger.reduce(textChunks, pass, maximumPasses)

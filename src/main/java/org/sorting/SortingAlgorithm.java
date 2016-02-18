@@ -1,6 +1,8 @@
 package org.sorting;
 
-import org.externalsorting.mergesort.TextChunk;
+import org.externalsorting.imp.BString;
+
+import java.util.List;
 
 /**
  * Created by ulises on 17/02/16.
@@ -8,5 +10,5 @@ import org.externalsorting.mergesort.TextChunk;
  */
 public interface SortingAlgorithm {
 
-    TextChunk sort(TextChunk textChunk);
+    void sort(List<BString> textChunk);
 }

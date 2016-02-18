@@ -1,5 +1,8 @@
 package org.externalsorting.imp;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 /**
  * Created by ulises.olivenza on 18/02/16.
  */
@@ -12,25 +15,35 @@ public class BString implements Comparable<BString> {
         this.value = value;
     }
 
+    /**
+     * Case insensitive comparator, copy from String
+     * @param anotherString
+     * @return
+     */
     @Override
     public int compareTo(BString anotherString) {
-        int len1 = value.length;
-        int len2 = anotherString.value.length;
-        int lim = Math.min(len1, len2);
-        char v1[] = value;
-        char v2[] = anotherString.value;
-
-        int k = 0;
-        while (k < lim) {
-            char c1 = v1[k];
-            char c2 = v2[k];
+        int n1 = this.value.length;
+        int n2 = anotherString.value.length;
+        int min = Math.min(n1, n2);
+        for (int i = 0; i < min; i++) {
+            char c1 = this.value[i];
+            char c2 = anotherString.value[i];
             if (c1 != c2) {
-                return c2 - c1;
+                c1 = Character.toUpperCase(c1);
+                c2 = Character.toUpperCase(c2);
+                if (c1 != c2) {
+                    c1 = Character.toLowerCase(c1);
+                    c2 = Character.toLowerCase(c2);
+                    if (c1 != c2) {
+                        // No overflow because of numeric promotion
+                        return c1 - c2;
+                    }
+                }
             }
-            k++;
         }
-        return len2;
+        return n1 - n2;
     }
+
 
     public int hashCode() {
         int h = hash;
@@ -65,5 +78,10 @@ public class BString implements Comparable<BString> {
             }
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return String.copyValueOf(value);
     }
 }
