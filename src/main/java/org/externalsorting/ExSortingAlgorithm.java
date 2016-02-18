@@ -1,5 +1,7 @@
 package org.externalsorting;
 
+import java.io.FileNotFoundException;
+
 /**
  * Created by ulises on 17/02/16.
  *
@@ -16,6 +18,6 @@ public interface ExSortingAlgorithm {
      * @param bigTextFile file to sort
      * @return new sorted file
      */
-    BigTextFile sort(BigTextFile bigTextFile);
+    BigTextFile sort(BigTextFile bigTextFile) throws FileNotFoundException;
 
 }

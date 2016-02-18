@@ -3,6 +3,7 @@ package org.externalsorting.mergesort;
 import org.externalsorting.BigTextFile;
 import org.externalsorting.ExSortingAlgorithm;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,7 @@ public class KPassMergeSort implements ExSortingAlgorithm {
     }
 
     @Override
-    public BigTextFile sort(BigTextFile bigTextFile) {
+    public BigTextFile sort(BigTextFile bigTextFile) throws FileNotFoundException {
         //Chunk and sort the chunks
         List<TextChunk> textChunks = bigTextFile.chunks().map(TextChunk::sort).collect(Collectors.toList());
 
