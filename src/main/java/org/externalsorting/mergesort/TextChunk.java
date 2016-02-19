@@ -17,6 +17,10 @@ import java.util.List;
 
 /**
  * Created by ulises on 17/02/16.
+ *
+ * Reference
+ * http://mechanical-sympathy.blogspot.com.es/2011/12/java-sequential-io-performance.html
+ *
  */
 public class TextChunk {
 

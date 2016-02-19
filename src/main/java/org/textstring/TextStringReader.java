@@ -1,8 +1,8 @@
 package org.textstring;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
-import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
@@ -18,20 +18,21 @@ public class TextStringReader {
     private final int bufferSize;
     private final CharsetDecoder charsetDecoder;
 
-    private MappedByteBuffer file;
-    private int copyToBuffer = 0;
-    private int copyFromBuffer = 0;
     private char[] buffer;
+    private int bufferFrom;
+    private int bufferTo ;
 
     private CharBuffer line;
-
-    private long position = 0;
-    private long size;
+    private boolean eof;
+    private boolean eol;
 
     public TextStringReader(FileChannel fc, Charset charset, int bufferSize) {
         this.fc = fc;
         this.charsetDecoder = charset.newDecoder();
         this.bufferSize = bufferSize;
+        bufferTo = 0;
+        bufferFrom = 0;
+        buffer=null;
     }
 
     public TextStringReader(FileChannel fc, Charset charset) {
@@ -43,57 +44,57 @@ public class TextStringReader {
     }
 
     public TextString readLine() throws IOException {
-        line = CharBuffer.allocate(0);
-        calculateSize();
         char c;
+        line = CharBuffer.allocate(0);
+        eof = false;
 
-        if (buffer == null) {
+        if(buffer==null){
             fillBuffer();
         }
 
-        while (size > 0) {
+        while (!eof && !eol) {
 
-            if (copyToBuffer >= buffer.length) {
-                copyFromBufferToLine();
+            if (bufferTo >= buffer.length) {
                 fillBuffer();
             }
 
-            c = buffer[copyToBuffer];
-            copyToBuffer++;
-            position++;
-
             // Check for eol
-            if ((c == '\n') || (c == '\r')) {
-                copyFromBufferToLine();
-                return new TextString(line.array());
+            while (bufferTo < buffer.length && !eol) {
+                c = buffer[bufferTo];
+                bufferTo++;
+                if ((c == '\n') || (c == '\r')) {
+                    eol = true;
+                }
             }
 
+            copyFromBufferToLine();
+            if (eol) {
+                eol = false;
+                return new TextString(line.array());
+            }
         }
 
         return null;
     }
 
     private void fillBuffer() throws IOException {
-        calculateSize();
-        file = fc.map(FileChannel.MapMode.READ_ONLY, position, size);
-        buffer = charsetDecoder.decode(file).array();
-        copyToBuffer = 0;
-        copyFromBuffer = 0;
-    }
-
-    private void calculateSize() throws IOException {
-        long edgeSize = fc.size() - position;
-        size = (edgeSize < bufferSize) ? edgeSize : bufferSize;
+        ByteBuffer byteBuffer = ByteBuffer.allocate(bufferSize);
+        eof = fc.read(byteBuffer) == -1;
+        byteBuffer.flip();
+        buffer = charsetDecoder.decode(byteBuffer).array();
+        bufferTo = 0;
+        bufferFrom = 0;
     }
 
     private void copyFromBufferToLine() {
-        CharBuffer newLine = CharBuffer.allocate(line.position() + copyToBuffer-copyFromBuffer);
+        CharBuffer newLine = CharBuffer.allocate(line.position() + bufferTo - bufferFrom);
         newLine.put(line.array(), 0, line.position());
         line = newLine;
-        line.put(buffer, copyFromBuffer, copyToBuffer-copyFromBuffer);
 
-        if (copyToBuffer < buffer.length) {
-            copyFromBuffer = copyToBuffer;
+        line.put(buffer, bufferFrom, bufferTo - bufferFrom);
+
+        if (bufferTo < bufferSize) {
+            bufferFrom = bufferTo;
         }
 
     }

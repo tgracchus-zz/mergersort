@@ -15,11 +15,11 @@ public class MergeSortTest {
     private MergeSort mergeSort;
 
     private List<TextString> lines = Arrays.asList(
-            new TextString("dichroous counterobligation metaplastic inexpectedly Janus supersedeas osculiferous initial relativistic intraplant Hallstatt thoracograph unsaddling reef trimetrogon marigram".toCharArray()),
-            new TextString("Gi oxberry hud postique auriscope oothecal hygric statorhab pterosaurian unrelinquishing pithecometric androkinin unornamented barlafummil preinvestigate bibliopegy".toCharArray()),
-            new TextString("nonextracted monosyllable".toCharArray()),
-            new TextString("".toCharArray()),
-            new TextString("1".toCharArray()));
+            new TextString("dichroous counterobligation metaplastic inexpectedly Janus supersedeas osculiferous initial relativistic intraplant Hallstatt thoracograph unsaddling reef trimetrogon marigram\n".toCharArray()),
+            new TextString("Gi oxberry hud postique auriscope oothecal hygric statorhab pterosaurian unrelinquishing pithecometric androkinin unornamented barlafummil preinvestigate bibliopegy\n".toCharArray()),
+            new TextString("nonextracted monosyllable\n".toCharArray()),
+            new TextString("\n".toCharArray()),
+            new TextString("1\n".toCharArray()));
 
     private List<TextString> expectedResult = Arrays.asList(
             lines.get(3),

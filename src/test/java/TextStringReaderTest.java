@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 
@@ -29,7 +30,7 @@ public class TextStringReaderTest {
     @Before
     public void setUp() throws Exception {
         File file = new File("src/test/resources/lineReaderTest.txt");
-        fc = new FileInputStream(file).getChannel();
+        fc = new RandomAccessFile(file,"r").getChannel();
         textStringReader = new TextStringReader(fc, StandardCharsets.UTF_8,60);
 
     }

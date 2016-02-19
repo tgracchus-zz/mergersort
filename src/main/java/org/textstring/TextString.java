@@ -1,7 +1,12 @@
 package org.textstring;
 
+import java.nio.CharBuffer;
+
 /**
  * Created by ulises.olivenza on 18/02/16.
+ * 
+ * Mutable, Not Thread Safe String!! to be used instead of String for performance reasons
+ * 
  */
 public class TextString implements Comparable<TextString> {
 
@@ -14,6 +19,7 @@ public class TextString implements Comparable<TextString> {
 
     /**
      * Case insensitive comparator, copy from String
+     * 
      * @param anotherString
      * @return
      */
@@ -40,7 +46,6 @@ public class TextString implements Comparable<TextString> {
         }
         return n1 - n2;
     }
-
 
     public int hashCode() {
         int h = hash;
@@ -75,6 +80,14 @@ public class TextString implements Comparable<TextString> {
             }
         }
         return false;
+    }
+
+    public int size() {
+        return value.length;
+    }
+
+    public CharBuffer toCharBuffer() {
+        return CharBuffer.wrap(value);
     }
 
     @Override
