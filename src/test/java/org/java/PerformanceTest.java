@@ -1,3 +1,5 @@
+package org.java;
+
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.System.out;
 import static java.nio.channels.FileChannel.MapMode.READ_ONLY;

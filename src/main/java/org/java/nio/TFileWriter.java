@@ -1,8 +1,8 @@
-package org.test.nio;
+package org.java.nio;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.test.lang.TString;
+import org.java.lang.TString;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -17,19 +17,19 @@ import java.util.List;
  * Not Thread Safe Class !!!
  * Created by ulises on 18/02/16.
  */
-public class TStreamWriter {
+public class TFileWriter {
 
-    private static final Logger log = LoggerFactory.getLogger(TStreamReader.class);
+    private static final Logger log = LoggerFactory.getLogger(TFileReader.class);
 
     private final FileChannel fc;
     private final CharsetEncoder charsetEncoder;
 
-    public TStreamWriter(TFile tFile, Charset charset) throws FileNotFoundException {
+    public TFileWriter(TFile tFile, Charset charset) throws FileNotFoundException {
         this.fc = new RandomAccessFile(tFile.file(), "rw").getChannel();
         this.charsetEncoder = charset.newEncoder();
     }
 
-    public TStreamWriter(TFile tFile) throws FileNotFoundException {
+    public TFileWriter(TFile tFile) throws FileNotFoundException {
         this(tFile, Charset.defaultCharset());
     }
 

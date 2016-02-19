@@ -1,12 +1,12 @@
+package org.java;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.test.externalsort.imp.ChunkFile;
-import org.test.lang.TString;
-import org.test.nio.TFile;
-import org.test.nio.TStreamWriter;
+import org.java.lang.TString;
+import org.java.nio.TFile;
+import org.java.nio.TFileWriter;
 
-import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class TStringWriterTest {
 
-    private TStreamWriter tStreamWriter;
+    private TFileWriter tFileWriter;
     private TFile outFile;
     private Path checkFile;
 
@@ -34,8 +34,8 @@ public class TStringWriterTest {
     @Before
     public void setUp() throws Exception {
         checkFile = Paths.get("src/test/resources/lineReaderTest.txt");
-        outFile = new TFile(Paths.get("src/test/resources/tmpWriterTest.txt"));
-        tStreamWriter = new TStreamWriter(outFile);
+        outFile = new TFile("src/test/resources/tmpWriterTest.txt");
+        tFileWriter = new TFileWriter(outFile);
     }
 
     @After
@@ -45,7 +45,7 @@ public class TStringWriterTest {
 
     @Test
     public void testReadLine() throws Exception {
-        tStreamWriter.writeLines(lines);
+        tFileWriter.writeLines(lines);
         assertTrue(outFile.file().exists());
 
         byte[] in = Files.readAllBytes(checkFile);

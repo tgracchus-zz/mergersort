@@ -1,7 +1,9 @@
-import org.test.lang.TString;
+package org.java;
+
+import org.java.lang.TString;
 import org.junit.Before;
 import org.junit.Test;
-import org.test.sort.MergeSort;
+import org.java.sort.MergeSort;
 
 import java.util.Arrays;
 import java.util.List;

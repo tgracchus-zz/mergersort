@@ -1,6 +1,6 @@
-package org.test.sort;
+package org.java.sort;
 
-import org.test.lang.TString;
+import org.java.lang.TString;
 
 import java.util.List;
 

@@ -1,9 +1,9 @@
-package org.test.nio;
+package org.java.nio;
 
+import org.java.externalsort.Chunk;
+import org.java.lang.TString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.test.externalsort.imp.ChunkFile;
-import org.test.lang.TString;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -20,10 +20,10 @@ import java.util.List;
  * Not Thread Safe Class !!!
  * Created by ulises.olivenza on 18/02/16.
  */
-public class TStreamReader {
+public class TFileReader {
 
 
-    private static final Logger log = LoggerFactory.getLogger(TStreamReader.class);
+    private final static Logger log = LoggerFactory.getLogger(TFileReader.class);
     private final static int DEFAULT_BUFFER_SIZE = 1024 * 2;
 
     private final int bufferSize;
@@ -39,7 +39,7 @@ public class TStreamReader {
     private boolean eof;
     private boolean eol;
 
-    public TStreamReader(TFile tFile, Charset charset, int bufferSize) throws FileNotFoundException {
+    public TFileReader(TFile tFile, Charset charset, int bufferSize) throws FileNotFoundException {
         fc = new RandomAccessFile(tFile.file(), "r").getChannel();
         this.charsetDecoder = charset.newDecoder();
         this.bufferSize = bufferSize;
@@ -49,12 +49,12 @@ public class TStreamReader {
         eof = false;
     }
 
-    public TStreamReader(ChunkFile chunkFile, Charset charset) throws FileNotFoundException {
-        this(chunkFile, charset, DEFAULT_BUFFER_SIZE);
+    public TFileReader(Chunk chunk, Charset charset) throws FileNotFoundException {
+        this(chunk, charset, DEFAULT_BUFFER_SIZE);
     }
 
-    public TStreamReader(ChunkFile chunkFile) throws FileNotFoundException {
-        this(chunkFile, Charset.defaultCharset(), DEFAULT_BUFFER_SIZE);
+    public TFileReader(Chunk chunk) throws FileNotFoundException {
+        this(chunk, Charset.defaultCharset(), DEFAULT_BUFFER_SIZE);
     }
 
     public List<TString> readLines() throws IOException {

@@ -1,4 +1,4 @@
-package org.test.lang;
+package org.java.lang;
 
 import java.nio.CharBuffer;
 

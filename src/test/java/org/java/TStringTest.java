@@ -1,6 +1,8 @@
+package org.java;
+
 import static org.junit.Assert.assertEquals;
 
-import org.test.lang.TString;
+import org.java.lang.TString;
 import org.junit.Test;
 
 /**
