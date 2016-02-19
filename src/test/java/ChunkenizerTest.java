@@ -1,8 +1,8 @@
 import java.io.File;
 import java.util.List;
 
+import org.test.externalsort.imp.ChunkFile;
 import org.test.externalsort.imp.Chunkenizer;
-import org.test.externalsort.imp.TextChunk;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +29,7 @@ public class ChunkenizerTest {
 
     @Test
     public void testReadLine() throws Exception {
-        List<TextChunk> textChunks = chunkenizer.chunk(bigFile);
-        textChunks.stream().forEach(textChunk -> textChunk.delete());
+        List<ChunkFile> chunkFiles = chunkenizer.chunk(bigFile);
+        chunkFiles.stream().forEach(textChunk -> textChunk.delete());
     }
 }

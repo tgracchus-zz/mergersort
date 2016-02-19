@@ -40,7 +40,7 @@ public class PathBigTextFile implements BigTextFile {
     }
 
     @Override
-    public Stream<TextChunk> chunks() throws FileNotFoundException {
+    public Stream<ChunkFile> chunks() throws FileNotFoundException {
 
         return null;
 

@@ -8,12 +8,12 @@ import java.nio.CharBuffer;
  * Mutable, Not Thread Safe String!! to be used instead of String for performance reasons
  * 
  */
-public class TextString implements Comparable<TextString> {
+public class TString implements Comparable<TString> {
 
     private final char value[];
     private int hash; // Default to 0
 
-    public TextString(char[] value) {
+    public TString(char[] value) {
         this.value = value;
     }
 
@@ -24,7 +24,7 @@ public class TextString implements Comparable<TextString> {
      * @return
      */
     @Override
-    public int compareTo(TextString anotherString) {
+    public int compareTo(TString anotherString) {
         int n1 = this.value.length;
         int n2 = anotherString.value.length;
         int min = Math.min(n1, n2);
@@ -64,8 +64,8 @@ public class TextString implements Comparable<TextString> {
         if (this == anObject) {
             return true;
         }
-        if (anObject instanceof TextString) {
-            TextString anotherString = (TextString) anObject;
+        if (anObject instanceof TString) {
+            TString anotherString = (TString) anObject;
             int n = value.length;
             if (n == anotherString.value.length) {
                 char v1[] = value;

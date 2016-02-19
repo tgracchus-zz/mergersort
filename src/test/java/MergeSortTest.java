@@ -1,4 +1,4 @@
-import org.test.lang.TextString;
+import org.test.lang.TString;
 import org.junit.Before;
 import org.junit.Test;
 import org.test.sort.MergeSort;
@@ -14,14 +14,14 @@ import static org.junit.Assert.assertEquals;
 public class MergeSortTest {
     private MergeSort mergeSort;
 
-    private List<TextString> lines = Arrays.asList(
-            new TextString("dichroous counterobligation metaplastic inexpectedly Janus supersedeas osculiferous initial relativistic intraplant Hallstatt thoracograph unsaddling reef trimetrogon marigram\n".toCharArray()),
-            new TextString("Gi oxberry hud postique auriscope oothecal hygric statorhab pterosaurian unrelinquishing pithecometric androkinin unornamented barlafummil preinvestigate bibliopegy\n".toCharArray()),
-            new TextString("nonextracted monosyllable\n".toCharArray()),
-            new TextString("\n".toCharArray()),
-            new TextString("1\n".toCharArray()));
+    private List<TString> lines = Arrays.asList(
+            new TString("dichroous counterobligation metaplastic inexpectedly Janus supersedeas osculiferous initial relativistic intraplant Hallstatt thoracograph unsaddling reef trimetrogon marigram\n".toCharArray()),
+            new TString("Gi oxberry hud postique auriscope oothecal hygric statorhab pterosaurian unrelinquishing pithecometric androkinin unornamented barlafummil preinvestigate bibliopegy\n".toCharArray()),
+            new TString("nonextracted monosyllable\n".toCharArray()),
+            new TString("\n".toCharArray()),
+            new TString("1\n".toCharArray()));
 
-    private List<TextString> expectedResult = Arrays.asList(
+    private List<TString> expectedResult = Arrays.asList(
             lines.get(3),
             lines.get(4),
             lines.get(0),

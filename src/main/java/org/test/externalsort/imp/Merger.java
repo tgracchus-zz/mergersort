@@ -9,11 +9,11 @@ import org.test.externalsort.BigTextFile;
  */
 public class Merger {
 
-    public TextChunk reduce(List<TextChunk> textChunks, int pass, int maximumPasses) {
+    public ChunkFile reduce(List<ChunkFile> chunkFiles, int pass, int maximumPasses) {
         return null;
     }
 
-    public BigTextFile merge(List<TextChunk> textChunks) {
+    public BigTextFile merge(List<ChunkFile> chunkFiles) {
         return null;
     }
 

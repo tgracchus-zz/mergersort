@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.stream.Stream;
 
-import org.test.externalsort.imp.TextChunk;
+import org.test.externalsort.imp.ChunkFile;
 
 /**
  * Created by ulises on 17/02/16.
@@ -25,7 +25,7 @@ public interface BigTextFile {
     String toAbsolutePath();
 
 
-    Stream<TextChunk> chunks() throws FileNotFoundException;
+    Stream<ChunkFile> chunks() throws FileNotFoundException;
 
     int passes();
 }

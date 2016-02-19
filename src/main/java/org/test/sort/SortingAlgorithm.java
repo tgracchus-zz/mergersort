@@ -1,6 +1,6 @@
 package org.test.sort;
 
-import org.test.lang.TextString;
+import org.test.lang.TString;
 
 import java.util.List;
 
@@ -10,5 +10,5 @@ import java.util.List;
  */
 public interface SortingAlgorithm {
 
-    void sort(List<TextString> textChunk);
+    void sort(List<TString> textChunk);
 }

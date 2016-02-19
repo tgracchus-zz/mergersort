@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-import org.test.externalsort.imp.TextChunk;
+import org.test.externalsort.imp.ChunkFile;
 import org.junit.Before;
 import org.junit.Test;
 import org.test.sort.MergeSort;
@@ -14,17 +14,17 @@ import org.test.sort.MergeSort;
 /**
  * Created by ulises on 18/02/16.
  */
-public class TextChunkTest {
+public class ChunkFileTest {
 
     private Path outFile;
     private Path inFile;
     private Path checkFile;
-    private TextChunk textChunk;
+    private ChunkFile chunkFile;
 
     @Before
     public void setUp() throws Exception {
         inFile = Paths.get("src/test/resources/lineReaderTest.txt");
-        textChunk = new TextChunk(1, inFile, new MergeSort());
+        chunkFile = new ChunkFile(1, inFile, new MergeSort());
         checkFile = Paths.get("src/test/resources/testChunkSortedTest.txt");
         outFile = Paths.get("src/test/resources/tmpWriterTest.txt");
 
@@ -32,8 +32,8 @@ public class TextChunkTest {
 
     @Test
     public void testReadLine() throws Exception {
-        TextChunk sortedChunk = textChunk.sort(outFile);
-        assertEquals(textChunk.chunkgroup(), sortedChunk.chunkgroup());
+        ChunkFile sortedChunk = chunkFile.sort(outFile);
+        assertEquals(chunkFile.chunkgroup(), sortedChunk.chunkgroup());
 
         byte[] in = Files.readAllBytes(outFile);
         byte[] out = Files.readAllBytes(checkFile);

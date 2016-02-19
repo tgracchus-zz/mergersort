@@ -1,57 +1,80 @@
 package org.test.nio;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.test.externalsort.imp.ChunkFile;
+import org.test.lang.TString;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
-
-import org.test.lang.TextString;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Not Thread Safe Class !!!
  * Created by ulises.olivenza on 18/02/16.
  */
-public class BufferedTextStringReader {
+public class TStreamReader {
 
+
+    private static final Logger log = LoggerFactory.getLogger(TStreamReader.class);
     private final static int DEFAULT_BUFFER_SIZE = 1024 * 2;
 
-    private final FileChannel fc;
     private final int bufferSize;
     private final CharsetDecoder charsetDecoder;
 
+    private FileChannel fc;
+
     private char[] buffer;
     private int bufferFrom;
-    private int bufferTo ;
+    private int bufferTo;
 
     private CharBuffer line;
     private boolean eof;
     private boolean eol;
 
-    public BufferedTextStringReader(FileChannel fc, Charset charset, int bufferSize) {
-        this.fc = fc;
+    public TStreamReader(TFile tFile, Charset charset, int bufferSize) throws FileNotFoundException {
+        fc = new RandomAccessFile(tFile.file(), "r").getChannel();
         this.charsetDecoder = charset.newDecoder();
         this.bufferSize = bufferSize;
         bufferTo = 0;
         bufferFrom = 0;
-        buffer=null;
+        buffer = null;
         eof = false;
     }
 
-    public BufferedTextStringReader(FileChannel fc, Charset charset) {
-        this(fc, charset, DEFAULT_BUFFER_SIZE);
+    public TStreamReader(ChunkFile chunkFile, Charset charset) throws FileNotFoundException {
+        this(chunkFile, charset, DEFAULT_BUFFER_SIZE);
     }
 
-    public BufferedTextStringReader(FileChannel fc) {
-        this(fc, Charset.defaultCharset(), DEFAULT_BUFFER_SIZE);
+    public TStreamReader(ChunkFile chunkFile) throws FileNotFoundException {
+        this(chunkFile, Charset.defaultCharset(), DEFAULT_BUFFER_SIZE);
     }
 
-    public TextString readLine() throws IOException {
+    public List<TString> readLines() throws IOException {
+
+        List<TString> lines = new ArrayList<>();
+
+        TString line;
+        while (null != (line = readLine())) {
+            lines.add(line);
+        }
+        return lines;
+
+    }
+
+
+    public TString readLine() throws IOException {
         char c;
         line = CharBuffer.allocate(0);
 
-        if(buffer==null){
+        if (buffer == null) {
             fillBuffer();
         }
 
@@ -73,7 +96,7 @@ public class BufferedTextStringReader {
             copyFromBufferToLine();
             if (eol) {
                 eol = false;
-                return new TextString(line.array());
+                return new TString(line.array());
             }
         }
 
@@ -101,5 +124,20 @@ public class BufferedTextStringReader {
         }
 
     }
+
+    public void close() {
+        closeFcSilently(fc);
+    }
+
+    private void closeFcSilently(FileChannel fc) {
+        if (fc != null) {
+            try {
+                fc.close();
+            } catch (IOException e) {
+                log.error(e.getLocalizedMessage(), e);
+            }
+        }
+    }
+
 
 }

@@ -1,6 +1,6 @@
 package org.test.sort;
 
-import org.test.lang.TextString;
+import org.test.lang.TString;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
 public class MergeSort implements SortingAlgorithm {
 
     @Override
-    public void sort(List<TextString> lines) {
+    public void sort(List<TString> lines) {
         Collections.sort(lines);
     }
 }

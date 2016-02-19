@@ -1,3 +1,4 @@
+build/
 /mergersort.ipr
 /mergersort.iws
 *.class

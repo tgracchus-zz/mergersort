@@ -27,7 +27,7 @@ public class KPassMergeSort implements ExSortingAlgorithm {
     @Override
     public BigTextFile sort(BigTextFile bigTextFile) throws FileNotFoundException {
         //Chunk and sort the chunks
-        List<TextChunk> textChunks = bigTextFile.chunks().map(textChunk -> textChunk.sort(new File(""))).collect(Collectors.toList());
+        List<ChunkFile> textChunks = bigTextFile.chunks().map(textChunk -> textChunk.sort(new File(""))).collect(Collectors.toList());
 
         //Merge the chunks in k passe
         for (int i = 0; i < bigTextFile.passes(); i++) {
@@ -37,11 +37,11 @@ public class KPassMergeSort implements ExSortingAlgorithm {
         return merger.merge(textChunks);
     }
 
-    private List<TextChunk> classifyAndReduce(List<TextChunk> textChunksList, int pass, int maximumPasses) {
+    private List<ChunkFile> classifyAndReduce(List<ChunkFile> textChunksList, int pass, int maximumPasses) {
 
         //Classify chunks by groupNumber and reduce
         return textChunksList.stream()
-                .collect(Collectors.groupingByConcurrent(TextChunk::chunkgroup))
+                .collect(Collectors.groupingByConcurrent(ChunkFile::chunkgroup))
                 .values().stream()
                 .map(textChunks ->
                         merger.reduce(textChunks, pass, maximumPasses)
