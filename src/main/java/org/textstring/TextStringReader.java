@@ -8,7 +8,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 
 /**
- * Not Thread Safe Class !!! Created by ulises.olivenza on 18/02/16.
+ * Not Thread Safe Class !!!
+ * Created by ulises.olivenza on 18/02/16.
  */
 public class TextStringReader {
 

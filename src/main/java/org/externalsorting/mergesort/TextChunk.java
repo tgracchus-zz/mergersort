@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +18,8 @@ import org.textstring.TextStringWriter;
 /**
  * Created by ulises on 17/02/16.
  *
- * Reference http://mechanical-sympathy.blogspot.com.es/2011/12/java-sequential-io-performance.html
+ * Not Thread Safe Class !!! Reference
+ * http://mechanical-sympathy.blogspot.com.es/2011/12/java-sequential-io-performance.html
  *
  */
 public class TextChunk {
@@ -25,16 +27,16 @@ public class TextChunk {
     private static final Logger log = LoggerFactory.getLogger(TextChunk.class);
 
     private final int chunkgroup;
-    private final File file;
+    private final Path file;
     private final SortingAlgorithm sortingAlgorithm;
 
-    public TextChunk(int chunkgroup, File file, SortingAlgorithm sortingAlgorithm) {
+    public TextChunk(int chunkgroup, Path file, SortingAlgorithm sortingAlgorithm) {
         this.chunkgroup = chunkgroup;
         this.file = file;
         this.sortingAlgorithm = sortingAlgorithm;
     }
 
-    public TextChunk sort(File destinationFile) throws IOException {
+    public TextChunk sort(Path destinationFile) throws IOException {
 
         List<TextString> lines = readLines();
         sortingAlgorithm.sort(lines);
@@ -45,7 +47,7 @@ public class TextChunk {
     private List<TextString> readLines() throws IOException {
         FileChannel fc = null;
         try {
-            fc = new RandomAccessFile(file, "r").getChannel();
+            fc = new RandomAccessFile(file.toFile(), "r").getChannel();
             TextStringReader textStringReader = new TextStringReader(fc);
             List<TextString> lines = new ArrayList<>();
 
@@ -59,17 +61,18 @@ public class TextChunk {
         }
     }
 
-    private TextChunk writeLines(List<TextString> lines, File destinationFile) throws IOException {
+    private TextChunk writeLines(List<TextString> lines, Path destinationPath) throws IOException {
 
         FileChannel fc = null;
         try {
 
+            File destinationFile = destinationPath.toFile();
             destinationFile.delete();
             destinationFile.createNewFile();
             fc = new RandomAccessFile(destinationFile, "rw").getChannel();
             TextStringWriter textStringWriter = new TextStringWriter(fc);
             textStringWriter.writeLines(lines);
-            return new TextChunk(this.chunkgroup, destinationFile, this.sortingAlgorithm);
+            return new TextChunk(this.chunkgroup, destinationPath, this.sortingAlgorithm);
         } finally {
             closeFcSilently(fc);
         }
@@ -89,4 +92,7 @@ public class TextChunk {
         return chunkgroup;
     }
 
+    public void delete() {
+        file.toFile().delete();
+    }
 }

@@ -8,6 +8,7 @@ import java.nio.charset.CharsetEncoder;
 import java.util.List;
 
 /**
+ * Not Thread Safe Class !!!
  * Created by ulises on 18/02/16.
  */
 public class TextStringWriter {
