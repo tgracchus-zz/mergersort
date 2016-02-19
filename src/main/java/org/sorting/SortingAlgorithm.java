@@ -1,6 +1,6 @@
 package org.sorting;
 
-import org.externalsorting.imp.BString;
+import org.textstring.TextString;
 
 import java.util.List;
 
@@ -10,5 +10,5 @@ import java.util.List;
  */
 public interface SortingAlgorithm {
 
-    void sort(List<BString> textChunk);
+    void sort(List<TextString> textChunk);
 }

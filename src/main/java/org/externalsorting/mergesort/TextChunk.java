@@ -1,7 +1,7 @@
 package org.externalsorting.mergesort;
 
-import org.externalsorting.imp.BString;
-import org.externalsorting.imp.BStringReader;
+import org.textstring.TextString;
+import org.textstring.TextStringReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sorting.SortingAlgorithm;
@@ -36,10 +36,10 @@ public class TextChunk {
         FileChannel fc = null;
         try {
             fc = new FileInputStream(file).getChannel();
-            BStringReader bStringReader = new BStringReader(fc, StandardCharsets.UTF_8, 60);
+            TextStringReader textStringReader = new TextStringReader(fc, StandardCharsets.UTF_8, 60);
 
-            List<BString> lines = new ArrayList<>();
-            BString line = bStringReader.readLine();
+            List<TextString> lines = new ArrayList<>();
+            TextString line = textStringReader.readLine();
             while (line != null) {
                 lines.add(line);
             }

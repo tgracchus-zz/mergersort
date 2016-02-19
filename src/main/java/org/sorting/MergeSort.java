@@ -1,6 +1,6 @@
 package org.sorting;
 
-import org.externalsorting.imp.BString;
+import org.textstring.TextString;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
 public class MergeSort implements SortingAlgorithm {
 
     @Override
-    public void sort(List<BString> lines) {
+    public void sort(List<TextString> lines) {
         Collections.sort(lines);
     }
 }

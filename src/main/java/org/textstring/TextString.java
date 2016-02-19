@@ -1,17 +1,14 @@
-package org.externalsorting.imp;
-
-import java.util.Arrays;
-import java.util.Comparator;
+package org.textstring;
 
 /**
  * Created by ulises.olivenza on 18/02/16.
  */
-public class BString implements Comparable<BString> {
+public class TextString implements Comparable<TextString> {
 
     private final char value[];
     private int hash; // Default to 0
 
-    public BString(char[] value) {
+    public TextString(char[] value) {
         this.value = value;
     }
 
@@ -21,7 +18,7 @@ public class BString implements Comparable<BString> {
      * @return
      */
     @Override
-    public int compareTo(BString anotherString) {
+    public int compareTo(TextString anotherString) {
         int n1 = this.value.length;
         int n2 = anotherString.value.length;
         int min = Math.min(n1, n2);
@@ -62,8 +59,8 @@ public class BString implements Comparable<BString> {
         if (this == anObject) {
             return true;
         }
-        if (anObject instanceof BString) {
-            BString anotherString = (BString) anObject;
+        if (anObject instanceof TextString) {
+            TextString anotherString = (TextString) anObject;
             int n = value.length;
             if (n == anotherString.value.length) {
                 char v1[] = value;

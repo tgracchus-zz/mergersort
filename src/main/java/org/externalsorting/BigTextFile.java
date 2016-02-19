@@ -2,11 +2,8 @@ package org.externalsorting;
 
 import org.externalsorting.mergesort.TextChunk;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URI;
-import java.nio.file.Path;
-import java.util.List;
 import java.util.stream.Stream;
 
 /**

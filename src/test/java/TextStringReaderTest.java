@@ -1,5 +1,5 @@
-import org.externalsorting.imp.BString;
-import org.externalsorting.imp.BStringReader;
+import org.textstring.TextString;
+import org.textstring.TextStringReader;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,9 +13,9 @@ import java.nio.charset.StandardCharsets;
 /**
  * Created by ulises.olivenza on 18/02/16.
  */
-public class BStringReaderTest {
+public class TextStringReaderTest {
 
-    private BStringReader bStringReader;
+    private TextStringReader textStringReader;
     private FileChannel fc;
 
     private String[] lines = {
@@ -30,7 +30,7 @@ public class BStringReaderTest {
     public void setUp() throws Exception {
         File file = new File("src/test/resources/lineReaderTest.txt");
         fc = new FileInputStream(file).getChannel();
-        bStringReader = new BStringReader(fc, StandardCharsets.UTF_8,60);
+        textStringReader = new TextStringReader(fc, StandardCharsets.UTF_8,60);
 
     }
 
@@ -43,11 +43,11 @@ public class BStringReaderTest {
     public void testReadLine() throws Exception {
 
         for (int i = 0; i < 5; i++) {
-            BString bString = bStringReader.readLine();
-            Assert.assertEquals(new BString(lines[i].toCharArray()), bString);
+            TextString textString = textStringReader.readLine();
+            Assert.assertEquals(new TextString(lines[i].toCharArray()), textString);
         }
 
-        Assert.assertNull(bStringReader.readLine());
+        Assert.assertNull(textStringReader.readLine());
 
     }
 

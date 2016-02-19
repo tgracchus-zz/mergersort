@@ -1,4 +1,4 @@
-package org.externalsorting.imp;
+package org.textstring;
 
 import java.io.IOException;
 import java.nio.CharBuffer;
@@ -11,7 +11,7 @@ import java.nio.charset.CharsetDecoder;
  * Not Thread Safe Class !!!
  * Created by ulises.olivenza on 18/02/16.
  */
-public class BStringReader {
+public class TextStringReader {
 
     private final static int DEFAULT_BUFFER_SIZE = 120;
 
@@ -22,58 +22,65 @@ public class BStringReader {
 
     private final CharsetDecoder charsetDecoder;
     private MappedByteBuffer file;
-    private CharBuffer buffer;
+    private int bufferPosition=0;
+    private char[] buffer;
 
-    public BStringReader(FileChannel fc, Charset charset, int bufferSize) {
+    public TextStringReader(FileChannel fc, Charset charset, int bufferSize) {
         this.fc = fc;
         this.charsetDecoder = charset.newDecoder();
         this.bufferSize = bufferSize;
+        this.buffer = CharBuffer.allocate(1).array();
     }
 
-    public BStringReader(FileChannel fc, Charset charset) {
-        this.fc = fc;
-        this.charsetDecoder = charset.newDecoder();
-        this.bufferSize = DEFAULT_BUFFER_SIZE;
+    public TextStringReader(FileChannel fc, Charset charset) {
+        this(fc, charset, DEFAULT_BUFFER_SIZE);
     }
 
-    public BStringReader(FileChannel fc) {
-        this.fc = fc;
-        this.charsetDecoder = Charset.defaultCharset().newDecoder();
-        this.bufferSize = DEFAULT_BUFFER_SIZE;
+    public TextStringReader(FileChannel fc) {
+        this(fc, Charset.defaultCharset(), DEFAULT_BUFFER_SIZE);
     }
 
-    public BString readLine() throws IOException {
-        CharBuffer line = CharBuffer.allocate(bufferSize);
-        fillBuffer();
+
+    public TextString readLine() throws IOException {
+        CharBuffer line = CharBuffer.allocate(0);
+        calculateSize();
         char c;
 
         while (size > 0) {
-            c = buffer.get();
+
+            if (bufferPosition<buffer.length) {
+                fillBuffer();
+            }
+
+            if (line.remaining() == 0) {
+                line = expandLine(line);
+            }
+
+            c = buffer[bufferPosition];
+            bufferPosition++;
             line.put(c);
             position++;
 
             // Check for eol
             if ((c == '\n') || (c == '\r')) {
-                return new BString(trimLine(line));
-            }
-
-            if (buffer.remaining() == 0) {
-                fillBuffer();
-                line = expandLine(line);
+                return new TextString(trimLine(line));
             }
 
         }
 
         return null;
-
-
     }
 
     private void fillBuffer() throws IOException {
+        calculateSize();
+        file = fc.map(FileChannel.MapMode.READ_ONLY, position, size);
+        buffer = charsetDecoder.decode(file).array();
+        bufferPosition=0;
+    }
+
+    private void calculateSize() throws IOException {
         long edgeSize = fc.size() - position;
         size = (edgeSize < bufferSize) ? edgeSize : bufferSize;
-        file = fc.map(FileChannel.MapMode.READ_ONLY, position, size);
-        buffer = charsetDecoder.decode(file);
     }
 
 
