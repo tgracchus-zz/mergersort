@@ -2,7 +2,6 @@ package org.textstring;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
@@ -36,13 +35,11 @@ public class TextStringWriter {
     }
 
     public void writeLines(List<TextString> lines) throws IOException {
-        MappedByteBuffer file;
         ByteBuffer line;
 
         for (TextString textString : lines) {
             line = charsetEncoder.encode(textString.toCharBuffer());
-            file = fc.map(FileChannel.MapMode.READ_WRITE, 0, textString.size());
-            file.put(line);
+            fc.write(line);
 
         }
 

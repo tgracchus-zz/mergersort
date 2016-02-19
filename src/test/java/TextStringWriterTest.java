@@ -1,9 +1,11 @@
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,19 +22,21 @@ public class TextStringWriterTest {
 
     private TextStringWriter textStringWriter;
     private FileChannel fc;
-    private File file;
+    private File outFile;
+    private File inFile;
 
     private List<TextString> lines = Arrays.asList(new TextString(
             "dichroous counterobligation metaplastic inexpectedly Janus supersedeas osculiferous initial relativistic intraplant Hallstatt thoracograph unsaddling reef trimetrogon marigram\n"
                     .toCharArray()), new TextString(
                             "Gi oxberry hud postique auriscope oothecal hygric statorhab pterosaurian unrelinquishing pithecometric androkinin unornamented barlafummil preinvestigate bibliopegy\n"
                                     .toCharArray()), new TextString("nonextracted monosyllable\n".toCharArray()),
-            new TextString("\n".toCharArray()), new TextString("1\n".toCharArray()), new TextString(null));
+            new TextString("\n".toCharArray()), new TextString("1\n".toCharArray()));
 
     @Before
     public void setUp() throws Exception {
-        file = new File("src/test/resources/tmpWriterTest.txt");
-        fc = new RandomAccessFile(file, "w").getChannel();
+        inFile = new File("src/test/resources/lineReaderTest.txt");
+        outFile = new File("src/test/resources/tmpWriterTest.txt");
+        fc = new RandomAccessFile(outFile, "rw").getChannel();
         textStringWriter = new TextStringWriter(fc, StandardCharsets.UTF_8, 60);
 
     }
@@ -40,13 +44,18 @@ public class TextStringWriterTest {
     @After
     public void tearDown() throws Exception {
         fc.close();
-        file.delete();
+        outFile.delete();
     }
 
     @Test
     public void testReadLine() throws Exception {
         textStringWriter.writeLines(lines);
-        assertTrue(file.exists());
+        assertTrue(outFile.exists());
+
+        byte[] in = Files.readAllBytes(inFile.toPath());
+        byte[] out = Files.readAllBytes(outFile.toPath());
+
+        assertTrue(Arrays.equals(in,out));
     }
 
 }
