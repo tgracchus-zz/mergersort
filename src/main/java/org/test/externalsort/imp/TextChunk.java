@@ -1,4 +1,4 @@
-package org.externalsorting.mergesort;
+package org.test.externalsort.imp;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,10 +10,10 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sorting.SortingAlgorithm;
-import org.textstring.TextString;
-import org.textstring.TextStringReader;
-import org.textstring.TextStringWriter;
+import org.test.sort.SortingAlgorithm;
+import org.test.lang.TextString;
+import org.test.nio.BufferedTextStringReader;
+import org.test.nio.BufferedTextStringWriter;
 
 /**
  * Created by ulises on 17/02/16.
@@ -48,11 +48,11 @@ public class TextChunk {
         FileChannel fc = null;
         try {
             fc = new RandomAccessFile(file.toFile(), "r").getChannel();
-            TextStringReader textStringReader = new TextStringReader(fc);
+            BufferedTextStringReader bufferedTextStringReader = new BufferedTextStringReader(fc);
             List<TextString> lines = new ArrayList<>();
 
             TextString line;
-            while (null != (line = textStringReader.readLine())) {
+            while (null != (line = bufferedTextStringReader.readLine())) {
                 lines.add(line);
             }
             return lines;
@@ -70,8 +70,8 @@ public class TextChunk {
             destinationFile.delete();
             destinationFile.createNewFile();
             fc = new RandomAccessFile(destinationFile, "rw").getChannel();
-            TextStringWriter textStringWriter = new TextStringWriter(fc);
-            textStringWriter.writeLines(lines);
+            BufferedTextStringWriter bufferedTextStringWriter = new BufferedTextStringWriter(fc);
+            bufferedTextStringWriter.writeLines(lines);
             return new TextChunk(this.chunkgroup, destinationPath, this.sortingAlgorithm);
         } finally {
             closeFcSilently(fc);

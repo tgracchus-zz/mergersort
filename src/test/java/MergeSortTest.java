@@ -1,7 +1,7 @@
-import org.textstring.TextString;
+import org.test.lang.TextString;
 import org.junit.Before;
 import org.junit.Test;
-import org.sorting.MergeSort;
+import org.test.sort.MergeSort;
 
 import java.util.Arrays;
 import java.util.List;

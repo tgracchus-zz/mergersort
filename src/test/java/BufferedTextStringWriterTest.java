@@ -12,15 +12,15 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.textstring.TextString;
-import org.textstring.TextStringWriter;
+import org.test.lang.TextString;
+import org.test.nio.BufferedTextStringWriter;
 
 /**
  * Created by ulises.olivenza on 18/02/16.
  */
-public class TextStringWriterTest {
+public class BufferedTextStringWriterTest {
 
-    private TextStringWriter textStringWriter;
+    private BufferedTextStringWriter bufferedTextStringWriter;
     private FileChannel fc;
     private File outFile;
     private File inFile;
@@ -37,7 +37,7 @@ public class TextStringWriterTest {
         inFile = new File("src/test/resources/lineReaderTest.txt");
         outFile = new File("src/test/resources/tmpWriterTest.txt");
         fc = new RandomAccessFile(outFile, "rw").getChannel();
-        textStringWriter = new TextStringWriter(fc, StandardCharsets.UTF_8, 60);
+        bufferedTextStringWriter = new BufferedTextStringWriter(fc, StandardCharsets.UTF_8, 60);
 
     }
 
@@ -49,7 +49,7 @@ public class TextStringWriterTest {
 
     @Test
     public void testReadLine() throws Exception {
-        textStringWriter.writeLines(lines);
+        bufferedTextStringWriter.writeLines(lines);
         assertTrue(outFile.exists());
 
         byte[] in = Files.readAllBytes(inFile.toPath());

@@ -1,4 +1,4 @@
-package org.textstring;
+package org.test.nio;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -7,11 +7,13 @@ import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 
+import org.test.lang.TextString;
+
 /**
  * Not Thread Safe Class !!!
  * Created by ulises.olivenza on 18/02/16.
  */
-public class TextStringReader {
+public class BufferedTextStringReader {
 
     private final static int DEFAULT_BUFFER_SIZE = 1024 * 2;
 
@@ -27,7 +29,7 @@ public class TextStringReader {
     private boolean eof;
     private boolean eol;
 
-    public TextStringReader(FileChannel fc, Charset charset, int bufferSize) {
+    public BufferedTextStringReader(FileChannel fc, Charset charset, int bufferSize) {
         this.fc = fc;
         this.charsetDecoder = charset.newDecoder();
         this.bufferSize = bufferSize;
@@ -37,11 +39,11 @@ public class TextStringReader {
         eof = false;
     }
 
-    public TextStringReader(FileChannel fc, Charset charset) {
+    public BufferedTextStringReader(FileChannel fc, Charset charset) {
         this(fc, charset, DEFAULT_BUFFER_SIZE);
     }
 
-    public TextStringReader(FileChannel fc) {
+    public BufferedTextStringReader(FileChannel fc) {
         this(fc, Charset.defaultCharset(), DEFAULT_BUFFER_SIZE);
     }
 

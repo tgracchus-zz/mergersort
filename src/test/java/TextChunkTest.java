@@ -6,10 +6,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-import org.externalsorting.mergesort.TextChunk;
+import org.test.externalsort.imp.TextChunk;
 import org.junit.Before;
 import org.junit.Test;
-import org.sorting.MergeSort;
+import org.test.sort.MergeSort;
 
 /**
  * Created by ulises on 18/02/16.

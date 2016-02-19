@@ -1,12 +1,9 @@
-package org.externalsorting.mergesort;
+package org.test.externalsort.imp;
 
-import org.externalsorting.BigTextFile;
-import org.externalsorting.ExSortingAlgorithm;
-
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.List;
-import java.util.stream.Collectors;
+
+import org.test.externalsort.BigTextFile;
+import org.test.externalsort.ExSortingAlgorithm;
 
 /**
  * Created by ulises on 17/02/16.

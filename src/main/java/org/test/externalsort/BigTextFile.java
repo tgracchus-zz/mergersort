@@ -1,10 +1,10 @@
-package org.externalsorting;
-
-import org.externalsorting.mergesort.TextChunk;
+package org.test.externalsort;
 
 import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.stream.Stream;
+
+import org.test.externalsort.imp.TextChunk;
 
 /**
  * Created by ulises on 17/02/16.

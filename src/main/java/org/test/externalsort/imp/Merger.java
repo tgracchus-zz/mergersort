@@ -1,8 +1,8 @@
-package org.externalsorting.mergesort;
-
-import org.externalsorting.BigTextFile;
+package org.test.externalsort.imp;
 
 import java.util.List;
+
+import org.test.externalsort.BigTextFile;
 
 /**
  * Created by ulises on 17/02/16.

@@ -1,4 +1,4 @@
-package org.externalsorting.mergesort;
+package org.test.externalsort.imp;
 
 import java.io.File;
 import java.util.List;

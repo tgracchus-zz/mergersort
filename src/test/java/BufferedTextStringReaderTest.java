@@ -1,12 +1,11 @@
-import org.textstring.TextString;
-import org.textstring.TextStringReader;
+import org.test.lang.TextString;
+import org.test.nio.BufferedTextStringReader;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
@@ -14,9 +13,9 @@ import java.nio.charset.StandardCharsets;
 /**
  * Created by ulises.olivenza on 18/02/16.
  */
-public class TextStringReaderTest {
+public class BufferedTextStringReaderTest {
 
-    private TextStringReader textStringReader;
+    private BufferedTextStringReader bufferedTextStringReader;
     private FileChannel fc;
 
     private String[] lines = {
@@ -31,7 +30,7 @@ public class TextStringReaderTest {
     public void setUp() throws Exception {
         File file = new File("src/test/resources/lineReaderTest.txt");
         fc = new RandomAccessFile(file,"r").getChannel();
-        textStringReader = new TextStringReader(fc, StandardCharsets.UTF_8,60);
+        bufferedTextStringReader = new BufferedTextStringReader(fc, StandardCharsets.UTF_8,60);
 
     }
 
@@ -44,11 +43,11 @@ public class TextStringReaderTest {
     public void testReadLine() throws Exception {
 
         for (int i = 0; i < 5; i++) {
-            TextString textString = textStringReader.readLine();
+            TextString textString = bufferedTextStringReader.readLine();
             Assert.assertEquals(new TextString(lines[i].toCharArray()), textString);
         }
 
-        Assert.assertNull(textStringReader.readLine());
+        Assert.assertNull(bufferedTextStringReader.readLine());
 
     }
 

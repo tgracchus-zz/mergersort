@@ -1,6 +1,8 @@
-package org.externalsorting;
+package org.test.externalsort;
 
 import java.io.FileNotFoundException;
+
+import org.test.externalsort.BigTextFile;
 
 /**
  * Created by ulises on 17/02/16.

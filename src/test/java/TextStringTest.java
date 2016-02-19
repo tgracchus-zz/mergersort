@@ -1,6 +1,6 @@
 import static org.junit.Assert.assertEquals;
 
-import org.textstring.TextString;
+import org.test.lang.TextString;
 import org.junit.Test;
 
 /**

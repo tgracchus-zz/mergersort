@@ -1,8 +1,7 @@
-package org.externalsorting.imp;
+package org.test.externalsort.imp;
 
-import org.externalsorting.BigTextFile;
-import org.externalsorting.ExSortingAlgorithm;
-import org.externalsorting.mergesort.TextChunk;
+import org.test.externalsort.BigTextFile;
+import org.test.externalsort.ExSortingAlgorithm;
 
 import java.io.FileNotFoundException;
 import java.net.URI;

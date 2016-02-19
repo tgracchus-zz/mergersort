@@ -1,6 +1,6 @@
-package org.sorting;
+package org.test.sort;
 
-import org.textstring.TextString;
+import org.test.lang.TextString;
 
 import java.util.Collections;
 import java.util.List;

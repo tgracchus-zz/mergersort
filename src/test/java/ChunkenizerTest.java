@@ -1,8 +1,8 @@
 import java.io.File;
 import java.util.List;
 
-import org.externalsorting.mergesort.Chunkenizer;
-import org.externalsorting.mergesort.TextChunk;
+import org.test.externalsort.imp.Chunkenizer;
+import org.test.externalsort.imp.TextChunk;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,8 +30,6 @@ public class ChunkenizerTest {
     @Test
     public void testReadLine() throws Exception {
         List<TextChunk> textChunks = chunkenizer.chunk(bigFile);
-
-
         textChunks.stream().forEach(textChunk -> textChunk.delete());
     }
 }
