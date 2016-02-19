@@ -1,25 +1,23 @@
 package org.externalsorting.mergesort;
 
-import org.textstring.TextString;
-import org.textstring.TextStringReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sorting.SortingAlgorithm;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.channels.FileChannel;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import org.textstring.TextString;
+import org.textstring.TextStringReader;
+import org.textstring.TextStringWriter;
 
 /**
  * Created by ulises on 17/02/16.
  *
- * Reference
- * http://mechanical-sympathy.blogspot.com.es/2011/12/java-sequential-io-performance.html
+ * Reference http://mechanical-sympathy.blogspot.com.es/2011/12/java-sequential-io-performance.html
  *
  */
 public class TextChunk {
@@ -36,39 +34,59 @@ public class TextChunk {
         this.sortingAlgorithm = sortingAlgorithm;
     }
 
-    public TextChunk sort() {
+    public TextChunk sort(File destinationFile) throws IOException {
+
+        List<TextString> lines = readLines();
+        sortingAlgorithm.sort(lines);
+
+        return writeLines(lines, destinationFile);
+    }
+
+    private List<TextString> readLines() throws IOException {
         FileChannel fc = null;
         try {
-            fc = new FileInputStream(file).getChannel();
-            TextStringReader textStringReader = new TextStringReader(fc, StandardCharsets.UTF_8, 60);
-
+            fc = new RandomAccessFile(file, "r").getChannel();
+            TextStringReader textStringReader = new TextStringReader(fc);
             List<TextString> lines = new ArrayList<>();
-            TextString line = textStringReader.readLine();
-            while (line != null) {
+
+            TextString line;
+            while (null != (line = textStringReader.readLine())) {
                 lines.add(line);
             }
-
-            sortingAlgorithm.sort(lines);
-
-        } catch (FileNotFoundException e) {
-            log.error(e.getLocalizedMessage(), e);
-        } catch (IOException e) {
-            log.error(e.getLocalizedMessage(), e);
+            return lines;
         } finally {
-            if (fc != null) {
-                try {
-                    fc.close();
-                } catch (IOException e) {
-                    log.error(e.getLocalizedMessage(), e);
-                }
+            closeFcSilently(fc);
+        }
+    }
+
+    private TextChunk writeLines(List<TextString> lines, File destinationFile) throws IOException {
+
+        FileChannel fc = null;
+        try {
+
+            destinationFile.delete();
+            destinationFile.createNewFile();
+            fc = new RandomAccessFile(destinationFile, "rw").getChannel();
+            TextStringWriter textStringWriter = new TextStringWriter(fc);
+            textStringWriter.writeLines(lines);
+            return new TextChunk(this.chunkgroup, destinationFile, this.sortingAlgorithm);
+        } finally {
+            closeFcSilently(fc);
+        }
+    }
+
+    private void closeFcSilently(FileChannel fc) {
+        if (fc != null) {
+            try {
+                fc.close();
+            } catch (IOException e) {
+                log.error(e.getLocalizedMessage(), e);
             }
         }
-        return this;
     }
 
-    int chunkgroup() {
+    public int chunkgroup() {
         return chunkgroup;
     }
-
 
 }

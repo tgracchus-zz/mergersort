@@ -3,6 +3,7 @@ package org.externalsorting.mergesort;
 import org.externalsorting.BigTextFile;
 import org.externalsorting.ExSortingAlgorithm;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +16,11 @@ import java.util.stream.Collectors;
  */
 public class KPassMergeSort implements ExSortingAlgorithm {
 
+    @Override public BigTextFile sort(BigTextFile bigTextFile) throws FileNotFoundException {
+        return null;
+    }
 
+    /*
     private final Merger merger;
 
     public KPassMergeSort(Merger merger) {
@@ -25,7 +30,7 @@ public class KPassMergeSort implements ExSortingAlgorithm {
     @Override
     public BigTextFile sort(BigTextFile bigTextFile) throws FileNotFoundException {
         //Chunk and sort the chunks
-        List<TextChunk> textChunks = bigTextFile.chunks().map(TextChunk::sort).collect(Collectors.toList());
+        List<TextChunk> textChunks = bigTextFile.chunks().map(textChunk -> textChunk.sort(new File(""))).collect(Collectors.toList());
 
         //Merge the chunks in k passe
         for (int i = 0; i < bigTextFile.passes(); i++) {
@@ -45,7 +50,7 @@ public class KPassMergeSort implements ExSortingAlgorithm {
                         merger.reduce(textChunks, pass, maximumPasses)
                 ).collect(Collectors.toList());
     }
-
+*/
 
 }
 

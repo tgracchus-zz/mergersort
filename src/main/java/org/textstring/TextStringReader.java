@@ -33,6 +33,7 @@ public class TextStringReader {
         bufferTo = 0;
         bufferFrom = 0;
         buffer=null;
+        eof = false;
     }
 
     public TextStringReader(FileChannel fc, Charset charset) {
@@ -46,7 +47,6 @@ public class TextStringReader {
     public TextString readLine() throws IOException {
         char c;
         line = CharBuffer.allocate(0);
-        eof = false;
 
         if(buffer==null){
             fillBuffer();
