@@ -54,7 +54,7 @@ public class TextStringTest {
         TextString textString = new TextString("abc".toCharArray());
         TextString secondTextString = new TextString("ba".toCharArray());
 
-        assertEquals(1, textString.compareTo(secondTextString));
+        assertEquals(-1, textString.compareTo(secondTextString));
     }
 
     @Test
@@ -63,6 +63,6 @@ public class TextStringTest {
         TextString textString = new TextString("ba".toCharArray());
         TextString secondTextString = new TextString("abc".toCharArray());
 
-        assertEquals(-1, textString.compareTo(secondTextString));
+        assertEquals(1, textString.compareTo(secondTextString));
     }
 }
