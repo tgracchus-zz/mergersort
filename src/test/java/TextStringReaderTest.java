@@ -19,11 +19,11 @@ public class TextStringReaderTest {
     private FileChannel fc;
 
     private String[] lines = {
-            "dichroous counterobligation metaplastic inexpectedly Janus supersedeas osculiferous initial relativistic intraplant Hallstatt thoracograph unsaddling reef trimetrogon marigram",
-            "Gi oxberry hud postique auriscope oothecal hygric statorhab pterosaurian unrelinquishing pithecometric androkinin unornamented barlafummil preinvestigate bibliopegy",
-            "nonextracted monosyllable",
-            "",
-            "1",
+            "dichroous counterobligation metaplastic inexpectedly Janus supersedeas osculiferous initial relativistic intraplant Hallstatt thoracograph unsaddling reef trimetrogon marigram\n",
+            "Gi oxberry hud postique auriscope oothecal hygric statorhab pterosaurian unrelinquishing pithecometric androkinin unornamented barlafummil preinvestigate bibliopegy\n",
+            "nonextracted monosyllable\n",
+            "\n",
+            "1\n",
             null};
 
     @Before

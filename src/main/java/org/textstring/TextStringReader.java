@@ -8,8 +8,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 
 /**
- * Not Thread Safe Class !!!
- * Created by ulises.olivenza on 18/02/16.
+ * Not Thread Safe Class !!! Created by ulises.olivenza on 18/02/16.
  */
 public class TextStringReader {
 
@@ -43,7 +42,6 @@ public class TextStringReader {
         this(fc, Charset.defaultCharset(), DEFAULT_BUFFER_SIZE);
     }
 
-
     public TextString readLine() throws IOException {
         line = CharBuffer.allocate(0);
         calculateSize();
@@ -56,7 +54,7 @@ public class TextStringReader {
         while (size > 0) {
 
             if (copyToBuffer >= buffer.length) {
-                copyFromBufferToLine(copyToBuffer);
+                copyFromBufferToLine();
                 fillBuffer();
             }
 
@@ -66,11 +64,7 @@ public class TextStringReader {
 
             // Check for eol
             if ((c == '\n') || (c == '\r')) {
-                if (copyToBuffer > 0) {
-                    copyFromBufferToLine(copyToBuffer - 1);
-                    copyToBuffer = copyToBuffer -1;
-                }
-                copyFromBuffer = copyToBuffer;
+                copyFromBufferToLine();
                 return new TextString(line.array());
             }
 
@@ -84,6 +78,7 @@ public class TextStringReader {
         file = fc.map(FileChannel.MapMode.READ_ONLY, position, size);
         buffer = charsetDecoder.decode(file).array();
         copyToBuffer = 0;
+        copyFromBuffer = 0;
     }
 
     private void calculateSize() throws IOException {
@@ -91,13 +86,16 @@ public class TextStringReader {
         size = (edgeSize < bufferSize) ? edgeSize : bufferSize;
     }
 
-
-    private void copyFromBufferToLine(int to) {
-        CharBuffer newLine = CharBuffer.allocate(line.position() + to);
+    private void copyFromBufferToLine() {
+        CharBuffer newLine = CharBuffer.allocate(line.position() + copyToBuffer-copyFromBuffer);
         newLine.put(line.array(), 0, line.position());
         line = newLine;
-        line.put(buffer, copyFromBuffer, to);
-    }
+        line.put(buffer, copyFromBuffer, copyToBuffer-copyFromBuffer);
 
+        if (copyToBuffer < buffer.length) {
+            copyFromBuffer = copyToBuffer;
+        }
+
+    }
 
 }
