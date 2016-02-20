@@ -5,7 +5,7 @@ package org.java.system;
  */
 public class MemoryManager {
 
-    public static final long MEGABYTE = 1024 * 1024 * 1024;
+    public static final long MEGABYTE = 1024 * 1024;
 
     public static final long MINIMUM_MEMORY_TO_RUN = MEGABYTE * 50;
 

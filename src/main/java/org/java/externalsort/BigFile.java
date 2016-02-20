@@ -3,6 +3,7 @@ package org.java.externalsort;
 import org.java.nio.TFile;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Path;
 
 /**
@@ -22,16 +23,16 @@ public class BigFile extends TFile {
         this.sortingAlgorithm = sortingAlgorithm;
     }
 
-    public BigFile(Path file) {
+    public BigFile(Path file) throws IOException {
         this(file, new KPassMergeSorter());
     }
 
-    public BigFile(String file) {
+    public BigFile(String file) throws IOException {
         this(file, new KPassMergeSorter());
     }
 
 
-    public BigFile sort() throws FileNotFoundException {
+    public BigFile sort() throws IOException {
         return sortingAlgorithm.sort(this);
     }
 

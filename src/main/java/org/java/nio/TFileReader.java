@@ -24,7 +24,7 @@ public class TFileReader {
 
 
     private final static Logger log = LoggerFactory.getLogger(TFileReader.class);
-    private final static int DEFAULT_BUFFER_SIZE = 1024 * 2;
+    private final static int DEFAULT_BUFFER_SIZE = 1024 * 2 * 1024;
 
     private final int bufferSize;
     private final CharsetDecoder charsetDecoder;
@@ -49,21 +49,29 @@ public class TFileReader {
         eof = false;
     }
 
-    public TFileReader(Chunk chunk, Charset charset) throws FileNotFoundException {
-        this(chunk, charset, DEFAULT_BUFFER_SIZE);
+    public TFileReader(TFile tFile, Charset charset) throws FileNotFoundException {
+        this(tFile, charset, DEFAULT_BUFFER_SIZE);
     }
 
-    public TFileReader(Chunk chunk) throws FileNotFoundException {
-        this(chunk, Charset.defaultCharset(), DEFAULT_BUFFER_SIZE);
+    public TFileReader(TFile tFile) throws FileNotFoundException {
+        this(tFile, Charset.defaultCharset(), DEFAULT_BUFFER_SIZE);
     }
 
-    public List<TString> readLines() throws IOException {
-
+    /**
+     * Try to read k lines up to size
+     *
+     * @param atLeast the minimum numbers of bytes to read
+     * @return Lines than weight at least the given size
+     * @throws IOException
+     */
+    public List<TString> readLines(long atLeast) throws IOException {
+        long readBytes = 0;
         List<TString> lines = new ArrayList<>();
 
         TString line;
-        while (null != (line = readLine())) {
+        while (readBytes < atLeast && null != (line = readLine())) {
             lines.add(line);
+            readBytes += line.size();
         }
         return lines;
 

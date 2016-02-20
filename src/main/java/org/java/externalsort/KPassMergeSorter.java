@@ -4,10 +4,9 @@ import org.java.nio.TFileReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by ulises on 17/02/16.
@@ -20,21 +19,30 @@ public class KPassMergeSorter implements BigFileSorter {
     private final static Logger log = LoggerFactory.getLogger(TFileReader.class);
 
     private final PassesCalculator passesCalculator;
+    private final Chunkenizer chunkenizer;
 
 
-    public KPassMergeSorter(PassesCalculator passesCalculator) {
+    public KPassMergeSorter(PassesCalculator passesCalculator, Chunkenizer chunkenizer) throws IOException {
         this.passesCalculator = passesCalculator;
+        this.chunkenizer = chunkenizer;
     }
 
-    public KPassMergeSorter() {
-        this.passesCalculator = new PassesCalculator();
+    public KPassMergeSorter() throws IOException {
+        this(new PassesCalculator(), new Chunkenizer());
     }
 
 
     @Override
-    public BigFile sort(BigFile bigTextFile) throws FileNotFoundException {
+    public BigFile sort(BigFile bigTextFile) throws IOException {
 
-        Passes passes = passesCalculator.calculatePasses(bigTextFile);
+        ChunksInfo chunksInfo = passesCalculator.calculatePasses(bigTextFile);
+        TFileReader tFileReader = new TFileReader(bigTextFile);
+
+        try {
+            chunkenizer.chunks(tFileReader, chunksInfo);
+        } finally {
+            tFileReader.close();
+        }
 /*
 
         //Chunk and sort the chunks
@@ -46,9 +54,9 @@ public class KPassMergeSorter implements BigFileSorter {
             }
         }).collect(Collectors.toList());
 
-        //Merge the chunks in k passes
-        for (int i = 0; i < passes; i++) {
-            textChunks = classifyAndReduce(textChunks, i, passes);
+        //Merge the chunks in k chunksInfo
+        for (int i = 0; i < chunksInfo; i++) {
+            textChunks = classifyAndReduce(textChunks, i, chunksInfo);
         }
 
         return merge(textChunks);*/
@@ -66,13 +74,6 @@ public class KPassMergeSorter implements BigFileSorter {
                 .map(textChunks ->
                         reduce(textChunks, pass, maximumPasses)
                 ).collect(Collectors.toList());
-    }
-
-    private Stream<Chunk> chunks(BigFile bigTextFile) {
-
-
-        return Stream.of(new Chunk(1, bigTextFile.path()));
-
     }
 
 

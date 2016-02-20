@@ -22,36 +22,38 @@ public class PassesCalculator {
         this.memoryManager = new MemoryManager();
     }
 
-    public Passes calculatePasses(BigFile bigTextFile) {
+    public ChunksInfo calculatePasses(BigFile bigTextFile) {
         long fileSize = bigTextFile.size();
         long availableMemory = memoryManager.availableMemory();
         int pass = 1;
-        long chunkSize = bigTextFile.size();
-        int numberOfBuckets = (int) (chunkSize / availableMemory);
-        List<PassInfo> passInfos = new ArrayList<>();
+
+        int numberOfBuckets = (int)Math.ceil(((double)bigTextFile.size()) / availableMemory);
+        long chunkSize = bigTextFile.size() / ((numberOfBuckets<=0) ? 1 : numberOfBuckets);
+        List<PassInfo> passes = new ArrayList<>();
 
         if (canBeSolvedByInMemorySort(fileSize, availableMemory)) {
-            passInfos.add(new PassInfo(pass, 1));
-            return new Passes(1, passInfos);
+            passes.add(new PassInfo(pass, 1));
+            return new ChunksInfo(1,chunkSize, passes);
         }
 
-        int totalBuckets = numberOfBuckets;
-        while (numberOfBuckets > 1) {
+        int iterativeNumberOfBuckets = numberOfBuckets;
+        long decreasingSize = bigTextFile.size();
+        while (iterativeNumberOfBuckets > 1) {
 
-            if (numberOfBuckets >= MAX_CHUNKS_NUMBER) {
-                passInfos.add(new PassInfo(pass, MAX_CHUNKS_NUMBER));
-                chunkSize = chunkSize / (MAX_CHUNKS_NUMBER * pass);
+            if (iterativeNumberOfBuckets >= MAX_CHUNKS_NUMBER) {
+                passes.add(new PassInfo(pass, MAX_CHUNKS_NUMBER));
+                decreasingSize = decreasingSize / (MAX_CHUNKS_NUMBER * pass);
                 pass++;
             } else {
-                passInfos.add(new PassInfo(pass, numberOfBuckets));
-                chunkSize = chunkSize / (numberOfBuckets * pass);
+                passes.add(new PassInfo(pass, iterativeNumberOfBuckets));
+                decreasingSize = decreasingSize / (iterativeNumberOfBuckets * pass);
                 pass++;
             }
-            numberOfBuckets = (int) (chunkSize / availableMemory);
+            iterativeNumberOfBuckets = (int) (decreasingSize / availableMemory);
 
         }
 
-        return new Passes(totalBuckets, passInfos);
+        return new ChunksInfo(numberOfBuckets,chunkSize, passes);
     }
 
 
