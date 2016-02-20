@@ -20,7 +20,7 @@ public class QuickSort implements SortAlg<Lines, Lines> {
 
     private void quicksort(List<TString> tStrings, int l, int h) {
 
-        if (tStrings.size() < 0) {
+        if (tStrings.size() <= 0) {
             return;
         }
 

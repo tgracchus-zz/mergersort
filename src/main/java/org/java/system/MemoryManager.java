@@ -11,11 +11,11 @@ public class MemoryManager {
 
     public long availableMemory() throws OutOfMemoryError {
         System.gc();
-        long freeMemory = Runtime.getRuntime().freeMemory();
+        long freeMemory = Runtime.getRuntime().totalMemory();
         if (freeMemory < MINIMUM_MEMORY_TO_RUN) {
             throw new OutOfMemoryError();
         }
-        return freeMemory / 2;
+        return (long) (freeMemory * 0.8);
     }
 
 
