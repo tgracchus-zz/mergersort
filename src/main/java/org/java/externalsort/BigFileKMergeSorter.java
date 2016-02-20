@@ -15,7 +15,7 @@ import java.nio.file.Path;
  * O(n log n)
  * K pass merge sort.
  */
-public class BigFileKMergeSorter implements BigFileSorter {
+public class BigFileKMergeSorter implements ExternalSorter {
 
     private final static Logger log = LoggerFactory.getLogger(TFileReader.class);
 

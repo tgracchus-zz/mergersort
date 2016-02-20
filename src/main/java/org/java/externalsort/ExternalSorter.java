@@ -14,8 +14,7 @@ import java.io.IOException;
  * <p>
  * Refer to https://en.wikipedia.org/wiki/External_sorting
  */
-public interface BigFileSorter {
-
+public interface ExternalSorter {
 
     void sort(BigFile bigTextFile, BigFile outputFile, boolean deleteTemporalDirs) throws IOException;
 }

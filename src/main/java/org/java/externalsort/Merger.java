@@ -1,8 +1,8 @@
 package org.java.externalsort;
 
 import org.java.lang.Lines;
-import org.java.lang.LinesMergeSort;
-import org.java.lang.LinesSorter;
+import org.java.lang.QuickSort;
+import org.java.lang.SortAlg;
 import org.java.lang.TString;
 import org.java.nio.BigFile;
 import org.java.nio.TFile;
@@ -26,15 +26,15 @@ public class Merger implements Function<Chunks, BigFile> {
 
 
     private final Path workingFolder;
-    private final LinesSorter inMemorySorting;
+    private final SortAlg inMemorySorting;
 
-    public Merger(Path workingFolder, LinesSorter inMemorySorting) {
+    public Merger(Path workingFolder, SortAlg inMemorySorting) {
         this.workingFolder = workingFolder;
         this.inMemorySorting = inMemorySorting;
     }
 
     public Merger(Path workingFolder) {
-        this(workingFolder, new LinesMergeSort());
+        this(workingFolder, new QuickSort());
     }
 
     @Override

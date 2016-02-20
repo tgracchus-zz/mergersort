@@ -1,8 +1,8 @@
 package org.java.externalsort;
 
 import org.java.lang.Lines;
-import org.java.lang.LinesMergeSort;
-import org.java.lang.LinesSorter;
+import org.java.lang.QuickSort;
+import org.java.lang.SortAlg;
 import org.java.nio.TFileReader;
 import org.java.nio.TFileWriter;
 
@@ -28,20 +28,20 @@ public class Chunkenizer implements Function<SortBigFile, Chunks> {
         }
     }
 
-    private final LinesSorter inMemorySorting;
+    private final SortAlg inMemorySorting;
     private final Path workingFolder;
 
 
-    public Chunkenizer(LinesSorter inMemorySorting, Path workingFolder) {
+    public Chunkenizer(SortAlg inMemorySorting, Path workingFolder) {
         this.inMemorySorting = inMemorySorting;
         this.workingFolder = workingFolder;
     }
 
     public Chunkenizer(Path workingFolder) {
-        this(new LinesMergeSort(), workingFolder);
+        this(new QuickSort(), workingFolder);
     }
 
-    public LinesSorter getInMemorySorting() {
+    public SortAlg getInMemorySorting() {
         return inMemorySorting;
     }
 

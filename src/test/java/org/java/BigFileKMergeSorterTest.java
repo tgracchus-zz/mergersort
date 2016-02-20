@@ -48,7 +48,7 @@ public class BigFileKMergeSorterTest {
         Chunkenizer chunkenizer = new Chunkenizer(Files.createTempDirectory("chunks"));
         Merger merger = new Merger(Files.createTempDirectory("merge"));
 
-        BigFileSorter sorter = new BigFileKMergeSorter(mergeSortInfoProvider, chunkenizer, merger);
+        ExternalSorter sorter = new BigFileKMergeSorter(mergeSortInfoProvider, chunkenizer, merger);
 
         sorter.sort(inFile, outFile, true);
 
@@ -58,7 +58,7 @@ public class BigFileKMergeSorterTest {
 
     @Test
     public void testOneChunks() throws Exception {
-        BigFileSorter sorter = new BigFileKMergeSorter();
+        ExternalSorter sorter = new BigFileKMergeSorter();
 
         sorter.sort(inFile, outFile, true);
 

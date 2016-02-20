@@ -6,7 +6,7 @@ import java.util.function.Function;
  * Created by ulises on 17/02/16.
  * Represents a in-memory sorting algorithm
  */
-public interface LinesSorter extends Function<Lines, Lines> {
+public interface SortAlg<T,R> extends Function<T,R> {
 
 
 }

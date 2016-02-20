@@ -1,7 +1,7 @@
 package org.java;
 
 import org.java.externalsort.BigFileKMergeSorter;
-import org.java.externalsort.BigFileSorter;
+import org.java.externalsort.ExternalSorter;
 import org.java.nio.BigFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,7 @@ public class Main {
             BigFile input = new BigFile(Paths.get(args[0]));
             BigFile outPut = new BigFile(Paths.get(args[1]));
 
-            BigFileSorter sorter = new BigFileKMergeSorter();
+            ExternalSorter sorter = new BigFileKMergeSorter();
             boolean deleteTemporalDirs = args.length == 3;
             sorter.sort(input, outPut, deleteTemporalDirs);
 
