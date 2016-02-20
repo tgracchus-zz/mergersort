@@ -53,7 +53,11 @@ public class TFile {
         return file().length();
     }
 
-    
+
+    public boolean exists() {
+        return file.toFile().exists();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

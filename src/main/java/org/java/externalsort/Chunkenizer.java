@@ -16,13 +16,13 @@ import java.util.function.Function;
 /**
  * Created by ulises on 20/02/16.
  */
-public class Chunkenizer implements Function<MergeBigFile, Chunks> {
+public class Chunkenizer implements Function<SortBigFile, Chunks> {
 
 
     @Override
-    public Chunks apply(MergeBigFile mergeBigFile) {
+    public Chunks apply(SortBigFile sortBigFile) {
         try {
-            return chunkenize(mergeBigFile.fileReader(), mergeBigFile.chunksInfo());
+            return chunkenize(sortBigFile.fileReader(), sortBigFile.chunksInfo());
         } catch (IOException e) {
             throw new FunctionException(e);
         }
@@ -37,8 +37,12 @@ public class Chunkenizer implements Function<MergeBigFile, Chunks> {
         this.workingFolder = workingFolder;
     }
 
-    public Chunkenizer() throws IOException {
-        this(new LinesMergeSort(), Files.createTempDirectory("chunks"));
+    public Chunkenizer(Path workingFolder) {
+        this(new LinesMergeSort(), workingFolder);
+    }
+
+    public LinesSorter getInMemorySorting() {
+        return inMemorySorting;
     }
 
     /**
@@ -68,7 +72,7 @@ public class Chunkenizer implements Function<MergeBigFile, Chunks> {
             TFileWriter tFileWriter = null;
             try {
                 chunkgroup = mergeSortInfo.bucketGroup(passNumber, chunkNumber);
-                Chunk chunk = new Chunk(Files.createTempFile(workingFolder, chunkName(chunkNumber), ".txt"),chunkgroup);
+                Chunk chunk = new Chunk(Files.createTempFile(workingFolder, chunkName(chunkNumber), ".txt"), chunkgroup);
                 tFileWriter = new TFileWriter(chunk);
                 tFileWriter.writeLines(lines);
                 chunks.add(chunk);
@@ -88,5 +92,9 @@ public class Chunkenizer implements Function<MergeBigFile, Chunks> {
 
     private String chunkName(long chunkNumber) {
         return "chunk" + chunkNumber + "-";
+    }
+
+    public Path getWorkingFolder() {
+        return workingFolder;
     }
 }

@@ -9,32 +9,32 @@ import java.util.List;
 /**
  * Created by ulises on 19/02/16.
  */
-public class ChunkCalculator {
+public class MergeSortInfoProvider {
 
     public final static int MAX_CHUNKS_NUMBER = 25;
 
     private final MemoryManager memoryManager;
 
-    public ChunkCalculator(MemoryManager memoryManager) {
+    public MergeSortInfoProvider(MemoryManager memoryManager) {
         this.memoryManager = memoryManager;
     }
 
-    public ChunkCalculator() {
+    public MergeSortInfoProvider() {
         this.memoryManager = new MemoryManager();
     }
 
-    public MergeSortInfo calculateChunks(BigFile bigTextFile) {
+    public MergeSortInfo buildMergeInfo(BigFile bigTextFile, BigFile outputFile) {
         long fileSize = bigTextFile.size();
         long availableMemory = memoryManager.availableMemory();
         int pass = 1;
 
-        int numberOfBuckets = (int)Math.ceil(((double)bigTextFile.size()) / availableMemory);
-        long chunkSize = bigTextFile.size() / ((numberOfBuckets<=0) ? 1 : numberOfBuckets);
+        int numberOfBuckets = (int) Math.ceil(((double) bigTextFile.size()) / availableMemory);
+        long chunkSize = bigTextFile.size() / ((numberOfBuckets <= 0) ? 1 : numberOfBuckets);
         List<PassInfo> passes = new ArrayList<>();
 
         if (canBeSolvedByInMemorySort(fileSize, availableMemory)) {
             passes.add(new PassInfo(pass, 1));
-            return new MergeSortInfo(1,chunkSize, passes);
+            return new MergeSortInfo(1, chunkSize, passes, outputFile);
         }
 
         int iterativeNumberOfBuckets = numberOfBuckets;
@@ -54,7 +54,7 @@ public class ChunkCalculator {
 
         }
 
-        return new MergeSortInfo(numberOfBuckets,chunkSize, passes);
+        return new MergeSortInfo(numberOfBuckets, chunkSize, passes, outputFile);
     }
 
 

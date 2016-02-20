@@ -13,6 +13,7 @@ import java.nio.CharBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class TFileReader {
     }
 
     public TFileReader(TFile tFile) throws FileNotFoundException {
-        this(tFile, Charset.defaultCharset(), DEFAULT_BUFFER_SIZE);
+        this(tFile, StandardCharsets.UTF_8, DEFAULT_BUFFER_SIZE);
     }
 
     /**
@@ -118,7 +119,12 @@ public class TFileReader {
         ByteBuffer byteBuffer = ByteBuffer.allocate(bufferSize);
         eof = fc.read(byteBuffer) == -1;
         byteBuffer.flip();
-        buffer = charsetDecoder.decode(byteBuffer).array();
+        buffer = new char[byteBuffer.limit()];
+        for (int i = 0; i < byteBuffer.limit(); i++) {
+            buffer[i] = (char) byteBuffer.get();
+        }
+
+        // buffer = charsetDecoder.decode(byteBuffer).array();
         bufferTo = 0;
         bufferFrom = 0;
     }
@@ -134,6 +140,7 @@ public class TFileReader {
             bufferFrom = bufferTo;
         }
 
+        newLine = null;
     }
 
     public void close() {

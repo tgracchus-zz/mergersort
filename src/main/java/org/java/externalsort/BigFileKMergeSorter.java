@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Created by ulises on 17/02/16.
@@ -17,40 +19,44 @@ public class BigFileKMergeSorter implements BigFileSorter {
 
     private final static Logger log = LoggerFactory.getLogger(TFileReader.class);
 
-    private final ChunkCalculator chunkCalculator;
+    private final MergeSortInfoProvider mergeSortInfoProvider;
     private final Chunkenizer chunkenizer;
     private final Merger merger;
 
+    private final Path chunkDirectory;
+    private final Path mergeDirectory;
 
-    public BigFileKMergeSorter(ChunkCalculator chunkCalculator, Chunkenizer chunkenizer, Merger merger) throws IOException {
-        this.chunkCalculator = chunkCalculator;
+
+    public BigFileKMergeSorter(MergeSortInfoProvider mergeSortInfoProvider, Chunkenizer chunkenizer, Merger merger) {
+        this.mergeSortInfoProvider = mergeSortInfoProvider;
         this.chunkenizer = chunkenizer;
         this.merger = merger;
+        this.chunkDirectory = chunkenizer.getWorkingFolder();
+        this.mergeDirectory = merger.getWorkingFolder();
     }
 
     public BigFileKMergeSorter() throws IOException {
-        this(new ChunkCalculator(), new Chunkenizer(), new Merger());
+        this(new MergeSortInfoProvider(),
+                new Chunkenizer(Files.createTempDirectory("chunks")),
+                new Merger(Files.createTempDirectory("merge")));
     }
+
 
     @Override
-    public BigFile apply(BigFile bigFile) {
-        try {
-            return sort(bigFile);
-        } catch (IOException e) {
-            throw new FunctionException(e);
-        }
-    }
-
-    private BigFile sort(BigFile bigTextFile) throws IOException {
+    public void sort(BigFile bigTextFile, BigFile outputFile, boolean deleteTemporalDirs) throws IOException {
         TFileReader tFileReader = null;
         try {
-            MergeSortInfo mergeSortInfo = chunkCalculator.calculateChunks(bigTextFile);
+            MergeSortInfo mergeSortInfo = mergeSortInfoProvider.buildMergeInfo(bigTextFile, outputFile);
             tFileReader = new TFileReader(bigTextFile);
-            return new MergeBigFile(tFileReader, mergeSortInfo).map(chunkenizer).reduce(merger);
+            new SortBigFile(tFileReader, mergeSortInfo).map(chunkenizer).reduce(merger);
 
         } finally {
             if (tFileReader != null) {
                 tFileReader.close();
+            }
+            if (deleteTemporalDirs) {
+                chunkDirectory.toFile().delete();
+                mergeDirectory.toFile().delete();
             }
         }
 

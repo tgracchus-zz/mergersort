@@ -3,7 +3,6 @@ package org.java.externalsort;
 import org.java.nio.BigFile;
 
 import java.io.IOException;
-import java.util.function.Function;
 
 /**
  * Created by ulises on 17/02/16.
@@ -15,7 +14,8 @@ import java.util.function.Function;
  * <p>
  * Refer to https://en.wikipedia.org/wiki/External_sorting
  */
-public interface BigFileSorter extends Function<BigFile,BigFile> {
+public interface BigFileSorter {
 
 
+    void sort(BigFile bigTextFile, BigFile outputFile, boolean deleteTemporalDirs) throws IOException;
 }

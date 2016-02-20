@@ -1,5 +1,7 @@
 package org.java.externalsort;
 
+import org.java.nio.BigFile;
+
 import java.util.List;
 
 /**
@@ -10,11 +12,17 @@ public class MergeSortInfo {
     private final int chunks;
     private final long chunkSize;
     private final List<PassInfo> passes;
+    private final BigFile outputFile;
 
-    public MergeSortInfo(int chunks, long chunkSize, List<PassInfo> passes) {
+    public MergeSortInfo(int chunks, long chunkSize, List<PassInfo> passes, BigFile outputFile) {
         this.chunks = chunks;
         this.chunkSize = chunkSize;
         this.passes = passes;
+        this.outputFile = outputFile;
+    }
+
+    public BigFile outputFile() {
+        return outputFile;
     }
 
     public int chunks() {

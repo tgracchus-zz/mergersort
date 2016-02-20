@@ -45,10 +45,6 @@ public class Chunks {
     }
 
 
-    public Chunks reduce(UnaryOperator<Chunks> chunkBinaryOperator) {
-        return chunkBinaryOperator.apply(this);
-    }
-
     public BigFile reduce(Function<Chunks, BigFile> reducer) {
         return reducer.apply(this);
     }
@@ -56,5 +52,13 @@ public class Chunks {
 
     public Chunk get(int i) {
         return chunks.get(i);
+    }
+
+    public int maximumPasses() {
+        return mergeSortInfo.maximumPasses();
+    }
+
+    public BigFile outputFile() {
+        return mergeSortInfo.outputFile();
     }
 }

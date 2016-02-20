@@ -1,9 +1,9 @@
 package org.java;
 
-import org.java.nio.BigFile;
 import org.java.externalsort.MergeSortInfo;
+import org.java.externalsort.MergeSortInfoProvider;
 import org.java.externalsort.PassInfo;
-import org.java.externalsort.ChunkCalculator;
+import org.java.nio.BigFile;
 import org.java.system.MemoryManager;
 import org.junit.Assert;
 import org.junit.Test;
@@ -24,12 +24,12 @@ public class MergeSortInfoCalculatorTest {
     public void testInMemoryFit() throws Exception {
         MemoryManager memoryManager = mock(MemoryManager.class);
         when(memoryManager.availableMemory()).thenReturn(MemoryManager.MEGABYTE * 10);
-        ChunkCalculator calculator = new ChunkCalculator(memoryManager);
+        MergeSortInfoProvider calculator = new MergeSortInfoProvider(memoryManager);
 
         BigFile file = mock(BigFile.class);
         when(file.size()).thenReturn(MemoryManager.MEGABYTE);
 
-        MergeSortInfo mergeSortInfo = calculator.calculateChunks(file);
+        MergeSortInfo mergeSortInfo = calculator.buildMergeInfo(file, mock(BigFile.class));
         List<PassInfo> passInfos = mergeSortInfo.passes();
 
         Assert.assertEquals(1, mergeSortInfo.chunks());
@@ -42,12 +42,12 @@ public class MergeSortInfoCalculatorTest {
     public void testBucketRoundUp() throws Exception {
         MemoryManager memoryManager = mock(MemoryManager.class);
         when(memoryManager.availableMemory()).thenReturn(MemoryManager.MEGABYTE);
-        ChunkCalculator calculator = new ChunkCalculator(memoryManager);
+        MergeSortInfoProvider calculator = new MergeSortInfoProvider(memoryManager);
 
         BigFile file = mock(BigFile.class);
-        when(file.size()).thenReturn((long)(MemoryManager.MEGABYTE*1.5));
+        when(file.size()).thenReturn((long) (MemoryManager.MEGABYTE * 1.5));
 
-        MergeSortInfo mergeSortInfo = calculator.calculateChunks(file);
+        MergeSortInfo mergeSortInfo = calculator.buildMergeInfo(file, mock(BigFile.class));
         List<PassInfo> passInfos = mergeSortInfo.passes();
 
         Assert.assertEquals(2, mergeSortInfo.chunks());
@@ -60,12 +60,12 @@ public class MergeSortInfoCalculatorTest {
     public void testOnePass() throws Exception {
         MemoryManager memoryManager = mock(MemoryManager.class);
         when(memoryManager.availableMemory()).thenReturn(MemoryManager.MEGABYTE);
-        ChunkCalculator calculator = new ChunkCalculator(memoryManager);
+        MergeSortInfoProvider calculator = new MergeSortInfoProvider(memoryManager);
 
         BigFile file = mock(BigFile.class);
         when(file.size()).thenReturn(MemoryManager.MEGABYTE * 10);
 
-        MergeSortInfo mergeSortInfo = calculator.calculateChunks(file);
+        MergeSortInfo mergeSortInfo = calculator.buildMergeInfo(file, mock(BigFile.class));
         List<PassInfo> passInfos = mergeSortInfo.passes();
 
         Assert.assertEquals(1, mergeSortInfo.maximumPasses());
@@ -83,12 +83,12 @@ public class MergeSortInfoCalculatorTest {
 
         IntStream.range(1, 2).forEach(k -> {
 
-            ChunkCalculator calculator = new ChunkCalculator(memoryManager);
+            MergeSortInfoProvider calculator = new MergeSortInfoProvider(memoryManager);
 
             BigFile file = mock(BigFile.class);
             when(file.size()).thenReturn(MemoryManager.MEGABYTE * 500 * k);
 
-            MergeSortInfo mergeSortInfo = calculator.calculateChunks(file);
+            MergeSortInfo mergeSortInfo = calculator.buildMergeInfo(file, mock(BigFile.class));
             List<PassInfo> passInfos = mergeSortInfo.passes();
 
             Assert.assertEquals(2, mergeSortInfo.maximumPasses());

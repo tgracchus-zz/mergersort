@@ -8,12 +8,12 @@ import java.util.function.Function;
 /**
  * Created by ulises on 20/02/16.
  */
-public class MergeBigFile {
+public class SortBigFile {
 
     private final TFileReader tFileReader;
     private final MergeSortInfo mergeSortInfo;
 
-    public MergeBigFile(TFileReader tFileReader, MergeSortInfo mergeSortInfo) {
+    public SortBigFile(TFileReader tFileReader, MergeSortInfo mergeSortInfo) {
         this.tFileReader = tFileReader;
         this.mergeSortInfo = mergeSortInfo;
     }
@@ -26,7 +26,7 @@ public class MergeBigFile {
         return tFileReader;
     }
 
-    public Chunks map(Function<MergeBigFile, Chunks> mapper) {
+    public Chunks map(Function<SortBigFile, Chunks> mapper) {
         Objects.requireNonNull(mapper);
         return mapper.apply(this);
     }

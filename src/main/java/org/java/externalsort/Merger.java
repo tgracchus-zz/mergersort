@@ -17,6 +17,8 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
 /**
  * Created by ulises on 20/02/16.
  */
@@ -31,8 +33,8 @@ public class Merger implements Function<Chunks, BigFile> {
         this.inMemorySorting = inMemorySorting;
     }
 
-    public Merger() throws IOException {
-        this(Files.createTempDirectory("merge"), new LinesMergeSort());
+    public Merger(Path workingFolder) {
+        this(workingFolder, new LinesMergeSort());
     }
 
     @Override
@@ -45,38 +47,44 @@ public class Merger implements Function<Chunks, BigFile> {
     }
 
     private BigFile reduce(Chunks chunks) throws IOException {
+
+        BigFile result;
         //Merge the map in k chunksInfo
-        for (int i = 0; i < chunks.chunksInfo().maximumPasses(); i++) {
+        for (int i = 0; i < chunks.maximumPasses(); i++) {
             chunks = classifyAndReduce(chunks, i);
         }
 
         //When no more than one pass, the chunks size must be 1 at this point, simple return it
-        if(chunks.size()==1){
+        if (chunks.size() == 1) {
             Chunk chunk = chunks.get(0);
-            return  new BigFile(chunk.path());
+            result = new BigFile(chunk.path());
+        } else {
+
+            //When more than k passes, need a final reduce
+            result = chunks.reduce(chunks1 -> {
+
+                Set<TFileReader> tFileReaders = new HashSet<>();
+                TFileWriter writer = null;
+                try {
+                    tFileReaders = initReaders(chunks1.get());
+                    BigFile bigFile = new BigFile(Files.createTempFile(workingFolder, "result", ".txt"));
+                    writer = new TFileWriter(bigFile);
+                    mergeLoop(tFileReaders, writer);
+
+                    return bigFile;
+                } catch (FileNotFoundException e) {
+                    throw new FunctionException(e);
+                } catch (IOException e) {
+                    throw new FunctionException(e);
+                } finally {
+                    closeSet(tFileReaders);
+                    writer.close();
+                }
+            });
         }
 
-        //When more than k passes, need a final reduce
-        return chunks.reduce((Function<Chunks, BigFile>) chunks1 -> {
-
-            Set<TFileReader> tFileReaders = new HashSet<>();
-            TFileWriter writer = null;
-            try {
-                tFileReaders = initReaders(chunks1.get());
-                BigFile bigFile = new BigFile(Files.createTempFile(workingFolder, "result", ".txt"));
-                writer = new TFileWriter(bigFile);
-                mergeLoop(tFileReaders, writer);
-                return bigFile;
-            } catch (FileNotFoundException e) {
-                throw new FunctionException(e);
-            } catch (IOException e) {
-                throw new FunctionException(e);
-            } finally {
-                closeSet(tFileReaders);
-                writer.close();
-            }
-        });
-
+        Files.move(result.path(), chunks.outputFile().path(), REPLACE_EXISTING);
+        return result;
     }
 
 
@@ -120,20 +128,23 @@ public class Merger implements Function<Chunks, BigFile> {
     private void mergeLoop(Set<TFileReader> tFileReaders, TFileWriter writer) throws IOException {
 
         Set<TFileReader> fileCopy = tFileReaders;
-        while (!fileCopy.isEmpty()) {
-            Lines.LinesBuilder linesBuilder = new Lines.LinesBuilder();
 
+        while (!fileCopy.isEmpty()) {
+            Set<TFileReader> toRemove = new HashSet<>();
+            Lines.LinesBuilder linesBuilder = new Lines.LinesBuilder();
             //readLines
             for (TFileReader reader : fileCopy) {
 
                 TString line = reader.readLine();
                 if (line == null) {
-                    fileCopy.remove(reader);
+                    toRemove.add(reader);
                 } else {
                     linesBuilder.add(line);
                 }
 
             }
+
+            fileCopy.removeAll(toRemove);
 
             //Sort lines
             Lines lines = linesBuilder.build().map(inMemorySorting);
@@ -160,4 +171,7 @@ public class Merger implements Function<Chunks, BigFile> {
     }
 
 
+    public Path getWorkingFolder() {
+        return workingFolder;
+    }
 }
