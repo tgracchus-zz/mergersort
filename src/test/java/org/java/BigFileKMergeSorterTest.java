@@ -25,18 +25,15 @@ public class BigFileKMergeSorterTest {
 
     @Before
     public void setUp() throws Exception {
-        inFile = new BigFile("/home/ulises/Documents/file.txt");
-        outFile = new BigFile("/home/ulises/Documents/result.txt");
-
-        //inFile = new BigFile("src/test/resources/file.txt");
-        //outFile = new BigFile("src/test/resources/outFile.txt");
+        inFile = new BigFile("src/test/resources/file.txt");
+        outFile = new BigFile("src/test/resources/outFile.txt");
 
     }
 
     @After
     @Ignore
     public void tearDown() throws Exception {
-       // outFile.delete();
+        outFile.delete();
 
     }
 
