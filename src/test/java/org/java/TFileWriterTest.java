@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by ulises.olivenza on 18/02/16.
  */
-public class TStringWriterTest {
+public class TFileWriterTest {
 
     private TFileWriter tFileWriter;
     private TFile outFile;

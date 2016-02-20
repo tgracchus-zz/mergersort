@@ -17,6 +17,7 @@ import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -31,6 +32,7 @@ public final class PerformanceTest {
     public static final byte[] BLANK_PAGE = new byte[PAGE_SIZE];
 
     @Test
+    @Ignore
     public void testPerformance() throws Exception {
         PerformanceTest.main(new String[0]);
 

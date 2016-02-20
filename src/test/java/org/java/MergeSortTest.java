@@ -39,6 +39,6 @@ public class MergeSortTest {
     @Test
     public void testMergerSort() throws Exception {
         Lines sortedLines = mergeSort.apply(new Lines(lines));
-        assertEquals(expectedResult, sortedLines);
+        assertEquals(expectedResult, sortedLines.getLines());
     }
 }

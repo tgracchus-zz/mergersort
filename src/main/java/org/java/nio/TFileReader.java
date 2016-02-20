@@ -13,7 +13,7 @@ import java.nio.CharBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.CodingErrorAction;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,15 +26,17 @@ public class TFileReader {
 
     private final static Logger log = LoggerFactory.getLogger(TFileReader.class);
     private final static int DEFAULT_BUFFER_SIZE = 1024 * 2 * 1024;
+    private final static int EXPECTED_LINE_SIZE = 160;
 
-    private final int bufferSize;
+    private int bufferSize;
     private final CharsetDecoder charsetDecoder;
 
     private FileChannel fc;
 
-    private char[] buffer;
-    private int bufferFrom;
+    private CharBuffer buffer;
     private int bufferTo;
+    private int bufferFrom;
+
 
     private CharBuffer line;
     private boolean eof;
@@ -42,15 +44,18 @@ public class TFileReader {
 
     private TFile tFile;
 
+
     public TFileReader(TFile tFile, Charset charset, int bufferSize) throws FileNotFoundException {
         fc = new RandomAccessFile(tFile.file(), "r").getChannel();
         this.charsetDecoder = charset.newDecoder();
+        this.charsetDecoder.onMalformedInput(CodingErrorAction.IGNORE);
+        this.charsetDecoder.onUnmappableCharacter(CodingErrorAction.IGNORE);
         this.bufferSize = bufferSize;
-        bufferTo = 0;
-        bufferFrom = 0;
-        buffer = null;
         eof = false;
         this.tFile = tFile;
+        bufferTo = 0;
+        bufferFrom = 0;
+        this.buffer = CharBuffer.allocate(0);
     }
 
     public TFileReader(TFile tFile, Charset charset) throws FileNotFoundException {
@@ -58,7 +63,7 @@ public class TFileReader {
     }
 
     public TFileReader(TFile tFile) throws FileNotFoundException {
-        this(tFile, StandardCharsets.UTF_8, DEFAULT_BUFFER_SIZE);
+        this(tFile, Charset.defaultCharset(), DEFAULT_BUFFER_SIZE);
     }
 
     /**
@@ -86,19 +91,16 @@ public class TFileReader {
         char c;
         line = CharBuffer.allocate(0);
 
-        if (buffer == null) {
-            fillBuffer();
-        }
 
         while (!eof && !eol) {
 
-            if (bufferTo >= buffer.length) {
+            if (!buffer.hasRemaining()) {
                 fillBuffer();
             }
 
             // Check for eol
-            while (bufferTo < buffer.length && !eol) {
-                c = buffer[bufferTo];
+            while (buffer.hasRemaining() && !eol) {
+                c = buffer.get();
                 bufferTo++;
                 if ((c == '\n') || (c == '\r')) {
                     eol = true;
@@ -106,6 +108,7 @@ public class TFileReader {
             }
 
             copyFromBufferToLine();
+
             if (eol) {
                 eol = false;
                 return new TString(line.array());
@@ -119,28 +122,20 @@ public class TFileReader {
         ByteBuffer byteBuffer = ByteBuffer.allocate(bufferSize);
         eof = fc.read(byteBuffer) == -1;
         byteBuffer.flip();
-        buffer = new char[byteBuffer.limit()];
-        for (int i = 0; i < byteBuffer.limit(); i++) {
-            buffer[i] = (char) byteBuffer.get();
-        }
-
-        // buffer = charsetDecoder.decode(byteBuffer).array();
+        buffer = charsetDecoder.decode(byteBuffer);
         bufferTo = 0;
         bufferFrom = 0;
     }
 
     private void copyFromBufferToLine() {
-        CharBuffer newLine = CharBuffer.allocate(line.position() + bufferTo - bufferFrom);
-        newLine.put(line.array(), 0, line.position());
+        CharBuffer newLine = CharBuffer.allocate(line.position() + (bufferTo - bufferFrom));
+        newLine.put(line.array(),0,line.position());
         line = newLine;
-
-        line.put(buffer, bufferFrom, bufferTo - bufferFrom);
+        line.put(buffer.array(), bufferFrom, bufferTo - bufferFrom);
 
         if (bufferTo < bufferSize) {
             bufferFrom = bufferTo;
         }
-
-        newLine = null;
     }
 
     public void close() {

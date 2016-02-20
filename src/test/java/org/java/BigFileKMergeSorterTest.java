@@ -34,6 +34,7 @@ public class BigFileKMergeSorterTest {
     }
 
     @After
+    @Ignore
     public void tearDown() throws Exception {
        // outFile.delete();
 
