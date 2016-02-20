@@ -8,6 +8,9 @@ import org.java.nio.BigFile;
 import org.java.nio.TFile;
 import org.java.nio.TFileReader;
 import org.java.nio.TFileWriter;
+import org.java.system.MemoryManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -24,6 +27,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
  */
 public class Merger implements Function<Chunks, BigFile> {
 
+    private final static Logger log = LoggerFactory.getLogger(Merger.class);
 
     private final Path workingFolder;
     private final SortAlg inMemorySorting;
@@ -83,6 +87,7 @@ public class Merger implements Function<Chunks, BigFile> {
             });
         }
 
+        log.info("Result File "+result.toAbsolutePath());
         Files.move(result.path(), chunks.outputFile().path(), REPLACE_EXISTING);
         return result;
     }
@@ -159,6 +164,7 @@ public class Merger implements Function<Chunks, BigFile> {
         Set<TFileReader> tFileReaders = new HashSet<>(files.size());
 
         for (TFile file : files) {
+            log.info("Reducing Chunk "+file.toAbsolutePath());
             TFileReader tFileReader = new TFileReader(file);
             tFileReaders.add(tFileReader);
         }

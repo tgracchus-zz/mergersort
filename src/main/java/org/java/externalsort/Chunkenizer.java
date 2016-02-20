@@ -5,6 +5,9 @@ import org.java.lang.QuickSort;
 import org.java.lang.SortAlg;
 import org.java.nio.TFileReader;
 import org.java.nio.TFileWriter;
+import org.java.system.MemoryManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,6 +21,7 @@ import java.util.function.Function;
  */
 public class Chunkenizer implements Function<SortBigFile, Chunks> {
 
+    private final static Logger log = LoggerFactory.getLogger(Chunkenizer.class);
 
     @Override
     public Chunks apply(SortBigFile sortBigFile) {
@@ -39,10 +43,6 @@ public class Chunkenizer implements Function<SortBigFile, Chunks> {
 
     public Chunkenizer(Path workingFolder) {
         this(new QuickSort(), workingFolder);
-    }
-
-    public SortAlg getInMemorySorting() {
-        return inMemorySorting;
     }
 
     /**
@@ -75,6 +75,7 @@ public class Chunkenizer implements Function<SortBigFile, Chunks> {
                 Chunk chunk = new Chunk(Files.createTempFile(workingFolder, chunkName(chunkNumber), ".txt"), chunkgroup);
                 tFileWriter = new TFileWriter(chunk);
                 tFileWriter.writeLines(lines);
+                log.info("New Chunk "+chunk.toAbsolutePath());
                 chunks.add(chunk);
             } finally {
                 if (tFileWriter != null) {

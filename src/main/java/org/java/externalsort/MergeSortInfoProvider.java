@@ -2,6 +2,8 @@ package org.java.externalsort;
 
 import org.java.nio.BigFile;
 import org.java.system.MemoryManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.List;
 public class MergeSortInfoProvider {
 
     public final static int MAX_CHUNKS_NUMBER = 25;
+    private final static Logger log = LoggerFactory.getLogger(MergeSortInfoProvider.class);
 
     private final MemoryManager memoryManager;
 
@@ -30,6 +33,11 @@ public class MergeSortInfoProvider {
 
         int numberOfBuckets = (int) Math.ceil(((double) bigTextFile.size()) / availableMemory);
         long chunkSize = bigTextFile.size() / ((numberOfBuckets <= 0) ? 1 : numberOfBuckets);
+
+        log.info("Available Memory "+availableMemory/MemoryManager.MEGABYTE+" MB");
+        log.info("Number Of Buckets "+numberOfBuckets);
+        log.info("Bucket Size "+chunkSize/MemoryManager.MEGABYTE+" MB");
+
         List<PassInfo> passes = new ArrayList<>();
 
         if (canBeSolvedByInMemorySort(fileSize, availableMemory)) {
@@ -37,6 +45,12 @@ public class MergeSortInfoProvider {
             return new MergeSortInfo(1, chunkSize, passes, outputFile);
         }
 
+        calculateKpasses(bigTextFile, availableMemory, pass, numberOfBuckets, passes);
+
+        return new MergeSortInfo(numberOfBuckets, chunkSize, passes, outputFile);
+    }
+
+    private void calculateKpasses(BigFile bigTextFile, long availableMemory, int pass, int numberOfBuckets, List<PassInfo> passes) {
         int iterativeNumberOfBuckets = numberOfBuckets;
         long decreasingSize = bigTextFile.size();
         while (iterativeNumberOfBuckets > 1) {
@@ -53,8 +67,6 @@ public class MergeSortInfoProvider {
             iterativeNumberOfBuckets = (int) (decreasingSize / availableMemory);
 
         }
-
-        return new MergeSortInfo(numberOfBuckets, chunkSize, passes, outputFile);
     }
 
 

@@ -23,8 +23,14 @@ public class Main {
             BigFile input = new BigFile(Paths.get(args[0]));
             BigFile outPut = new BigFile(Paths.get(args[1]));
 
-            ExternalSorter sorter = new BigFileKMergeSorter();
             boolean deleteTemporalDirs = args.length == 3;
+
+            log.info("Input file: " + input.toAbsolutePath());
+            log.info("Output file: " + outPut.toAbsolutePath());
+            log.info("Delete Temporal Dirs: " + deleteTemporalDirs);
+
+            ExternalSorter sorter = new BigFileKMergeSorter();
+
             sorter.sort(input, outPut, deleteTemporalDirs);
 
 
