@@ -4,6 +4,7 @@ import org.java.nio.TFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
@@ -17,7 +18,8 @@ public class Chunk extends TFile {
 
     private final int chunkgroup;
 
-    public Chunk(int chunkgroup, Path file) {
+
+    public Chunk(Path file,int chunkgroup) {
         super(file);
         this.chunkgroup = chunkgroup;
     }
@@ -30,6 +32,7 @@ public class Chunk extends TFile {
     public int chunkgroup() {
         return chunkgroup;
     }
+
 
 
 }

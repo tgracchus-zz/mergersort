@@ -1,6 +1,6 @@
 package org.java.nio;
 
-import org.java.externalsort.Chunk;
+import org.java.lang.Lines;
 import org.java.lang.TString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +39,8 @@ public class TFileReader {
     private boolean eof;
     private boolean eol;
 
+    private TFile tFile;
+
     public TFileReader(TFile tFile, Charset charset, int bufferSize) throws FileNotFoundException {
         fc = new RandomAccessFile(tFile.file(), "r").getChannel();
         this.charsetDecoder = charset.newDecoder();
@@ -47,6 +49,7 @@ public class TFileReader {
         bufferFrom = 0;
         buffer = null;
         eof = false;
+        this.tFile = tFile;
     }
 
     public TFileReader(TFile tFile, Charset charset) throws FileNotFoundException {
@@ -64,7 +67,7 @@ public class TFileReader {
      * @return Lines than weight at least the given size
      * @throws IOException
      */
-    public List<TString> readLines(long atLeast) throws IOException {
+    public Lines readLines(long atLeast) throws IOException {
         long readBytes = 0;
         List<TString> lines = new ArrayList<>();
 
@@ -73,7 +76,7 @@ public class TFileReader {
             lines.add(line);
             readBytes += line.size();
         }
-        return lines;
+        return new Lines(lines);
 
     }
 
@@ -148,4 +151,19 @@ public class TFileReader {
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TFileReader that = (TFileReader) o;
+
+        return tFile != null ? tFile.equals(that.tFile) : that.tFile == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return tFile != null ? tFile.hashCode() : 0;
+    }
 }

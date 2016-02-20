@@ -1,5 +1,6 @@
 package org.java;
 
+import org.java.lang.Lines;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +46,7 @@ public class TStringWriterTest {
 
     @Test
     public void testReadLine() throws Exception {
-        tFileWriter.writeLines(lines);
+        tFileWriter.writeLines(new Lines(lines));
         assertTrue(outFile.file().exists());
 
         byte[] in = Files.readAllBytes(checkFile);

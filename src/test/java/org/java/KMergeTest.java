@@ -1,6 +1,5 @@
 package org.java;
 
-
 import org.java.externalsort.*;
 import org.java.nio.BigFile;
 import org.java.nio.TFileReader;
@@ -17,13 +16,15 @@ import static org.mockito.Mockito.when;
 /**
  * Created by ulises on 20/02/16.
  */
-public class ChunkenizerTest {
+public class KMergeTest {
 
     private BigFile inFile;
     private Chunkenizer chunkenizer;
+    private Merger merger;
 
     @Before
     public void setUp() throws Exception {
+        merger = new Merger();
         inFile = new BigFile("src/test/resources/file.txt");
         chunkenizer = new Chunkenizer();
     }
@@ -42,7 +43,7 @@ public class ChunkenizerTest {
         try {
             Chunks chunkList = chunkenizer.apply(new MergeBigFile(tFileReader, mergeSortInfo));
             assertEquals(mergeSortInfo.chunks(), chunkList.size());
-
+            BigFile result = merger.apply(chunkList);
 
         } finally {
             tFileReader.close();
@@ -59,6 +60,7 @@ public class ChunkenizerTest {
         try {
             Chunks chunkList = chunkenizer.apply(new MergeBigFile(tFileReader, mergeSortInfo));
             assertEquals(mergeSortInfo.chunks(), chunkList.size());
+            BigFile result = merger.apply(chunkList);
 
         } finally {
             tFileReader.close();

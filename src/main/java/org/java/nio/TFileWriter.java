@@ -1,5 +1,6 @@
 package org.java.nio;
 
+import org.java.lang.Lines;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.java.lang.TString;
@@ -34,8 +35,8 @@ public class TFileWriter {
     }
 
 
-    public void writeLines(List<TString> lines) throws IOException {
-        for (TString tString : lines) {
+    public void writeLines(Lines lines) throws IOException {
+        for (TString tString : lines.getLines()) {
             writeLine(tString);
         }
     }

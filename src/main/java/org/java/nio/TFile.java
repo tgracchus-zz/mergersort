@@ -52,4 +52,21 @@ public class TFile {
     public long size() {
         return file().length();
     }
+
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TFile tFile = (TFile) o;
+
+        return file != null ? file.equals(tFile.file) : tFile.file == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return file != null ? file.hashCode() : 0;
+    }
 }

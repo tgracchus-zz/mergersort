@@ -1,5 +1,6 @@
 package org.java.externalsort;
 
+import org.java.nio.BigFile;
 import org.java.system.MemoryManager;
 
 import java.util.ArrayList;
@@ -8,21 +9,21 @@ import java.util.List;
 /**
  * Created by ulises on 19/02/16.
  */
-public class PassesCalculator {
+public class ChunkCalculator {
 
     public final static int MAX_CHUNKS_NUMBER = 25;
 
     private final MemoryManager memoryManager;
 
-    public PassesCalculator(MemoryManager memoryManager) {
+    public ChunkCalculator(MemoryManager memoryManager) {
         this.memoryManager = memoryManager;
     }
 
-    public PassesCalculator() {
+    public ChunkCalculator() {
         this.memoryManager = new MemoryManager();
     }
 
-    public ChunksInfo calculatePasses(BigFile bigTextFile) {
+    public MergeSortInfo calculateChunks(BigFile bigTextFile) {
         long fileSize = bigTextFile.size();
         long availableMemory = memoryManager.availableMemory();
         int pass = 1;
@@ -33,7 +34,7 @@ public class PassesCalculator {
 
         if (canBeSolvedByInMemorySort(fileSize, availableMemory)) {
             passes.add(new PassInfo(pass, 1));
-            return new ChunksInfo(1,chunkSize, passes);
+            return new MergeSortInfo(1,chunkSize, passes);
         }
 
         int iterativeNumberOfBuckets = numberOfBuckets;
@@ -53,7 +54,7 @@ public class PassesCalculator {
 
         }
 
-        return new ChunksInfo(numberOfBuckets,chunkSize, passes);
+        return new MergeSortInfo(numberOfBuckets,chunkSize, passes);
     }
 
 

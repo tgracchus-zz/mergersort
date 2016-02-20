@@ -54,8 +54,8 @@ public class TFileReaderTest {
     @Test
     public void testReadLines() throws Exception {
 
-        List<TString> firstRead = TFileReader.readLines(200);
-        List<TString> secondRead = TFileReader.readLines(200);
+        List<TString> firstRead = TFileReader.readLines(200).getLines();
+        List<TString> secondRead = TFileReader.readLines(200).getLines();
 
         Assert.assertEquals(2, firstRead.size());
         Assert.assertEquals(3, secondRead.size());

@@ -2,17 +2,11 @@ package org.java;
 
 import org.java.externalsort.Chunk;
 import org.java.nio.TFile;
-import org.java.sort.MergeSort;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Created by ulises on 18/02/16.
@@ -27,7 +21,7 @@ public class ChunkTest {
     @Before
     public void setUp() throws Exception {
         inFile = Paths.get("src/test/resources/lineReaderTest.txt");
-        chunk = new Chunk(1, inFile);
+        chunk = new Chunk(inFile, 1 );
         checkFile = Paths.get("src/test/resources/testChunkSortedTest.txt");
         outFile = new TFile("src/test/resources/tmpWriterTest.txt");
 

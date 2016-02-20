@@ -1,9 +1,10 @@
 package org.java;
 
+import org.java.lang.Lines;
+import org.java.lang.LinesMergeSort;
 import org.java.lang.TString;
 import org.junit.Before;
 import org.junit.Test;
-import org.java.sort.MergeSort;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,7 +15,7 @@ import static org.junit.Assert.assertEquals;
  * Created by ulises.olivenza on 18/02/16.
  */
 public class MergeSortTest {
-    private MergeSort mergeSort;
+    private LinesMergeSort mergeSort;
 
     private List<TString> lines = Arrays.asList(
             new TString("dichroous counterobligation metaplastic inexpectedly Janus supersedeas osculiferous initial relativistic intraplant Hallstatt thoracograph unsaddling reef trimetrogon marigram\n".toCharArray()),
@@ -32,12 +33,12 @@ public class MergeSortTest {
 
     @Before
     public void setUp() {
-        mergeSort = new MergeSort();
+        mergeSort = new LinesMergeSort();
     }
 
     @Test
     public void testMergerSort() throws Exception {
-        mergeSort.sort(lines);
-        assertEquals(expectedResult, lines);
+        Lines sortedLines = mergeSort.apply(new Lines(lines));
+        assertEquals(expectedResult, sortedLines);
     }
 }

@@ -1,45 +1,55 @@
 package org.java.externalsort;
 
-import org.java.lang.TString;
+import org.java.lang.Lines;
+import org.java.lang.LinesMergeSort;
+import org.java.lang.LinesSorter;
 import org.java.nio.TFileReader;
 import org.java.nio.TFileWriter;
-import org.java.sort.MergeSort;
-import org.java.sort.SortingAlgorithm;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.function.Function;
 
 /**
  * Created by ulises on 20/02/16.
  */
-public class Chunkenizer {
+public class Chunkenizer implements Function<MergeBigFile, Chunks> {
 
 
-    private final SortingAlgorithm inMemorySorting;
+    @Override
+    public Chunks apply(MergeBigFile mergeBigFile) {
+        try {
+            return chunkenize(mergeBigFile.fileReader(), mergeBigFile.chunksInfo());
+        } catch (IOException e) {
+            throw new FunctionException(e);
+        }
+    }
+
+    private final LinesSorter inMemorySorting;
     private final Path workingFolder;
 
-    public Chunkenizer(SortingAlgorithm inMemorySorting, Path workingFolder) {
+
+    public Chunkenizer(LinesSorter inMemorySorting, Path workingFolder) {
         this.inMemorySorting = inMemorySorting;
         this.workingFolder = workingFolder;
     }
 
     public Chunkenizer() throws IOException {
-        this(new MergeSort(), Files.createTempDirectory("sort"));
+        this(new LinesMergeSort(), Files.createTempDirectory("chunks"));
     }
 
     /**
      * Chunk and sort the big file, before merge
      *
      * @param tFileReader
-     * @param chunksInfo
+     * @param mergeSortInfo
      * @return
      * @throws IOException
      */
-    public Stream<Chunk> chunks(TFileReader tFileReader, ChunksInfo chunksInfo) throws IOException {
+    private Chunks chunkenize(TFileReader tFileReader, MergeSortInfo mergeSortInfo) throws IOException {
 
         int passNumber = 0;
         int chunkNumber = 0;
@@ -47,32 +57,36 @@ public class Chunkenizer {
         int chunkgroup;
 
 
-        while (chunkNumber < chunksInfo.chunks()) {
-            List<TString> lines = tFileReader.readLines(chunksInfo.chunkSize());
+        while (chunkNumber < mergeSortInfo.chunks()) {
+            Lines lines = tFileReader.readLines(mergeSortInfo.chunkSize());
             if (lines.isEmpty()) {
                 break;
             }
-            chunkgroup = chunksInfo.bucketGroup(passNumber, chunkNumber);
-            inMemorySorting.sort(lines);
-            Chunk chunk = new Chunk(chunkgroup, Files.createTempFile(workingFolder, chunkName(passNumber, chunkNumber), ".txt"));
 
-            TFileWriter tFileWriter = new TFileWriter(chunk);
+            lines = lines.map(inMemorySorting);
+
+            TFileWriter tFileWriter = null;
             try {
+                chunkgroup = mergeSortInfo.bucketGroup(passNumber, chunkNumber);
+                Chunk chunk = new Chunk(Files.createTempFile(workingFolder, chunkName(chunkNumber), ".txt"),chunkgroup);
+                tFileWriter = new TFileWriter(chunk);
                 tFileWriter.writeLines(lines);
+                chunks.add(chunk);
             } finally {
-                tFileWriter.close();
+                if (tFileWriter != null) {
+                    tFileWriter.close();
+                }
             }
 
-            chunks.add(chunk);
             chunkNumber++;
         }
 
-        return chunks.stream();
+        return new Chunks(chunks, mergeSortInfo);
 
     }
 
 
-    private String chunkName(long passNumber, long chunkNumber) {
-        return "p" + passNumber + "c" + chunkNumber + "-";
+    private String chunkName(long chunkNumber) {
+        return "chunk" + chunkNumber + "-";
     }
 }
