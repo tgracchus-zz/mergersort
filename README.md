@@ -9,6 +9,13 @@ Considerations
  and the test PerformanceTest in the project. 
 
 
+To use it, 
+1. Invoke ./gradlew clean distZip in the project folder
+2. A zip file containing the application will be created under build/distributions
+3. Unzip it
+4. And call it with 
+  .bin/mergesort.sh inputFile outFile deleteTmpDirectories"
+  .bin/mergesort.sh inputFile outFile"
 
 
 <h3>KMerge:</h3>
