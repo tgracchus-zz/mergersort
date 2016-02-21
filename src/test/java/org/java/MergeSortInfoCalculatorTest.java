@@ -91,7 +91,7 @@ public class MergeSortInfoCalculatorTest {
             MergeSortInfo mergeSortInfo = calculator.buildMergeInfo(file, mock(BigFile.class));
             List<PassInfo> passInfos = mergeSortInfo.passes();
 
-            Assert.assertEquals(2, mergeSortInfo.maximumPasses());
+            Assert.assertEquals(1, mergeSortInfo.maximumPasses());
             Assert.assertEquals(500, mergeSortInfo.chunks());
             Assert.assertEquals(2 * k, passInfos.size());
             Assert.assertEquals(k, passInfos.get(0).number());
