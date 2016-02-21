@@ -7,7 +7,7 @@ public class MemoryManager {
 
     public static final long MEGABYTE = 1024 * 1024;
 
-    public static final long MINIMUM_MEMORY_TO_RUN = MEGABYTE * 50;
+    public static final long MINIMUM_MEMORY_TO_RUN = MEGABYTE * 10;
 
     public long availableMemory() throws OutOfMemoryError {
         System.gc();
@@ -15,7 +15,7 @@ public class MemoryManager {
         if (freeMemory < MINIMUM_MEMORY_TO_RUN) {
             throw new OutOfMemoryError();
         }
-        return (long) (freeMemory * 0.8);
+        return (long) (freeMemory * 0.1);
     }
 
 

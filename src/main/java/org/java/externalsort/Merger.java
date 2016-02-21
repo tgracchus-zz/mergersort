@@ -52,7 +52,7 @@ public class Merger implements Function<Chunks, BigFile> {
 
         BigFile result;
         //Merge the map in k chunksInfo
-        for (int i = 0; i < chunks.maximumPasses()-1; i++) {
+        for (int i = 0; i < chunks.maximumPasses(); i++) {
             chunks = classifyAndReduce(chunks, i);
         }
 

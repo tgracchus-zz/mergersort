@@ -47,7 +47,12 @@ public class MergeSortInfo {
     }
 
     public int maximumPasses() {
-        return passes.size();
+        if (passes.size() > 1) {
+            return passes.size() - 1;
+        } else {
+            return passes.size();
+        }
+
     }
 
     @Override
