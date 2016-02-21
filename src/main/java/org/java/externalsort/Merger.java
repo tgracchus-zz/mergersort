@@ -52,7 +52,7 @@ public class Merger implements Function<Chunks, BigFile> {
 
         BigFile result;
         //Merge the map in k chunksInfo
-        for (int i = 0; i < chunks.maximumPasses(); i++) {
+        for (int i = 0; i < chunks.maximumPasses()-1; i++) {
             chunks = classifyAndReduce(chunks, i);
         }
 
@@ -61,6 +61,10 @@ public class Merger implements Function<Chunks, BigFile> {
             Chunk chunk = chunks.get(0);
             result = new BigFile(chunk.path());
         } else {
+
+            chunks.stream().forEach(file -> {
+                log.info("Reducing Chunk " + file.toAbsolutePath());
+            });
 
             //When more than k passes, need a final reduce
             result = chunks.reduce(chunks1 -> {
