@@ -15,7 +15,7 @@ public class MemoryManager {
         if (freeMemory < MINIMUM_MEMORY_TO_RUN) {
             throw new OutOfMemoryError();
         }
-        return (long) (freeMemory * 0.1);
+        return (long) (freeMemory * 0.8);
     }
 
 
