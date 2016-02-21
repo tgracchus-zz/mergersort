@@ -143,6 +143,7 @@ public class Merger implements Function<Chunks, BigFile> {
                 TString line = reader.readLine();
                 if (line == null) {
                     toRemove.add(reader);
+                    reader.close();
                 } else {
                     linesBuilder.add(line);
                 }
