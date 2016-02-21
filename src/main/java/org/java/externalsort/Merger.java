@@ -87,8 +87,8 @@ public class Merger implements Function<Chunks, BigFile> {
             });
         }
 
-        log.info("Result File "+result.toAbsolutePath());
         Files.move(result.path(), chunks.outputFile().path(), REPLACE_EXISTING);
+        log.info("Result File "+chunks.outputFile().toAbsolutePath());
         return result;
     }
 

@@ -24,57 +24,39 @@ public class QuickSort implements SortAlg<Lines, Lines> {
             return;
         }
 
-        Deque<StackElement<TString>> stack = new ArrayDeque<>(l - h + 1);
+        Deque<Integer> stack = new ArrayDeque<>(l - h + 1);
 
-        stack.push(new StackElement(tStrings, l));
-        stack.push(new StackElement(tStrings, h));
+        stack.push(l);
+        stack.push(h);
 
         // Keep popping from stack while is not empty
         while (!stack.isEmpty()) {
             // Pop h and l
-            StackElement hs = stack.pop();
-            h = hs.index;
+            h = stack.pop();
+            l = stack.pop();
 
-            StackElement ls = stack.pop();
-            l = ls.index;
 
             // Set pivot element at its correct position in sorted array
-            int p = partition(tStrings, ls.index, hs.index);
+            int p = randomPartition(tStrings, l, h);
 
             // If there are elements on left side of pivot, then push left
             // side to stack
             if (p - 1 > l) {
-                stack.push(new StackElement(tStrings, l));
-                stack.push(new StackElement(tStrings, p - 1));
+                stack.push(l);
+                stack.push(p - 1);
 
             }
 
             // If there are elements on right side of pivot, then push right
             // side to stack
             if (p + 1 < h) {
-                stack.push(new StackElement(tStrings, p + 1));
-                stack.push(new StackElement(tStrings, h));
+                stack.push(p + 1);
+                stack.push(h);
 
             }
         }
     }
 
-    private static class StackElement<T> {
-
-        private T element;
-        private int index;
-
-        private StackElement(List<T> elements, int index) {
-            this.element = elements.get(index);
-            this.index = index;
-        }
-
-        @Override
-        public String toString() {
-            return element.toString();
-        }
-
-    }
 
     private int randomPartition(List<TString> tStrings, int l, int h) {
         int i = ThreadLocalRandom.current().nextInt(l, h + 1);
