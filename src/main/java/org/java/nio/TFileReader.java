@@ -25,7 +25,7 @@ public class TFileReader {
 
 
     private final static Logger log = LoggerFactory.getLogger(TFileReader.class);
-    private final static int DEFAULT_BUFFER_SIZE = 1024 * 2 * 1024;
+    private final static int DEFAULT_BUFFER_SIZE = 1024 * 4 * 1024;
     private final static int EXPECTED_LINE_SIZE = 160;
 
     private int bufferSize;
@@ -75,7 +75,7 @@ public class TFileReader {
      */
     public Lines readLines(long atLeast) throws IOException {
         long readBytes = 0;
-        List<TString> lines = new ArrayList<>();
+        List<TString> lines = new ArrayList<>((int) atLeast / EXPECTED_LINE_SIZE);
 
         TString line;
         while (readBytes < atLeast && null != (line = readLine())) {
@@ -129,7 +129,7 @@ public class TFileReader {
 
     private void copyFromBufferToLine() {
         CharBuffer newLine = CharBuffer.allocate(line.position() + (bufferTo - bufferFrom));
-        newLine.put(line.array(),0,line.position());
+        newLine.put(line.array(), 0, line.position());
         line = newLine;
         line.put(buffer.array(), bufferFrom, bufferTo - bufferFrom);
 

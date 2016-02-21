@@ -20,4 +20,12 @@ public class PassInfo {
     public int numberOfBuckets() {
         return numberOfBuckets;
     }
+
+    @Override
+    public String toString() {
+        return "PassInfo{" +
+                "number=" + number +
+                ", numberOfBuckets=" + numberOfBuckets +
+                '}';
+    }
 }

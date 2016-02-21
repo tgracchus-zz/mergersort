@@ -49,4 +49,14 @@ public class MergeSortInfo {
     public int maximumPasses() {
         return passes.size();
     }
+
+    @Override
+    public String toString() {
+        return "MergeSortInfo{" +
+                "chunks=" + chunks +
+                ", chunkSize=" + chunkSize +
+                ", passes=" + passes +
+                ", outputFile=" + outputFile +
+                '}';
+    }
 }

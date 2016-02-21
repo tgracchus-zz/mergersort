@@ -43,8 +43,8 @@ public class Lines {
 
         private final List<TString> sortedList;
 
-        public LinesBuilder() {
-            this.sortedList = new ArrayList<>();
+        public LinesBuilder(int size) {
+            this.sortedList = new ArrayList<>(size);
         }
 
         public LinesBuilder add(TString tString) {

@@ -8,6 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by ulises on 20/02/16.
+ * Randomized Iterative QuickSort algorithm for in-memory sorting
  */
 public class QuickSort implements SortAlg<Lines, Lines> {
     @Override

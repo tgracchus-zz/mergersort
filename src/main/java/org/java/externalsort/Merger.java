@@ -5,7 +5,6 @@ import org.java.lang.QuickSort;
 import org.java.lang.SortAlg;
 import org.java.lang.TString;
 import org.java.nio.BigFile;
-import org.java.nio.TFile;
 import org.java.nio.TFileReader;
 import org.java.nio.TFileWriter;
 import org.slf4j.Logger;
@@ -102,13 +101,22 @@ public class Merger implements Function<Chunks, BigFile> {
         List<Chunk> finalChunks = new ArrayList<>();
         int bucketNumber = 0;
 
+        log.info("Reducing pass " + pass);
         for (int key : classification.keySet()) {
             List<Chunk> chunksClassified = classification.get(key);
-            int chunkgroup = chunksParam.chunksInfo().bucketGroup(pass + 1, bucketNumber);
-            finalChunks.add(merge(chunksClassified, chunkgroup));
-            bucketNumber++;
 
+            int chunkgroup = chunksParam.chunksInfo().bucketGroup(pass + 1, bucketNumber);
+            log.info("Next group for " + chunkgroup + " chunkgroup " + " and pass " + pass);
+            chunksClassified.stream().forEach(file -> {
+                log.info("Reducing Chunk " + file.toAbsolutePath() + " with pass/group " + pass + "/" + file.chunkgroup());
+            });
+
+
+            Chunk chunk = merge(chunksClassified, chunkgroup);
+            finalChunks.add(chunk);
+            bucketNumber++;
         }
+
 
         return new Chunks(finalChunks, chunksParam.chunksInfo());
     }
@@ -125,38 +133,50 @@ public class Merger implements Function<Chunks, BigFile> {
             return chunk;
         } finally {
             closeSet(tFileReaders);
-            writer.close();
+            if (writer != null) {
+                writer.close();
+            }
         }
     }
 
     private void mergeLoop(Set<TFileReader> tFileReaders, TFileWriter writer) throws IOException {
+        Set<TFileReader> toRemoveAndClose = new HashSet<>();
+        try {
 
-        Set<TFileReader> fileCopy = tFileReaders;
+            while (!tFileReaders.isEmpty()) {
+                Lines.LinesBuilder linesBuilder = new Lines.LinesBuilder(tFileReaders.size());
 
-        while (!fileCopy.isEmpty()) {
-            Set<TFileReader> toRemove = new HashSet<>();
-            Lines.LinesBuilder linesBuilder = new Lines.LinesBuilder();
-            //readLines
-            for (TFileReader reader : fileCopy) {
-
-                TString line = reader.readLine();
-                if (line == null) {
-                    toRemove.add(reader);
-                } else {
-                    linesBuilder.add(line);
+                //readLines
+                for (TFileReader reader : tFileReaders) {
+                    TString line = reader.readLine();
+                    if (line == null) {
+                        toRemoveAndClose.add(reader);
+                    } else {
+                        linesBuilder.add(line);
+                    }
                 }
 
+                disposeIfReaderEmpty(toRemoveAndClose, tFileReaders);
+
+                //Sort lines
+                Lines lines = linesBuilder.build().map(inMemorySorting);
+
+                //WriteLines
+                writer.writeLines(lines);
             }
 
-            if (!toRemove.isEmpty()) {
-                closeSet(toRemove);
-                fileCopy.removeAll(toRemove);
-            }
-            //Sort lines
-            Lines lines = linesBuilder.build().map(inMemorySorting);
+        } finally {
+            closeSet(toRemoveAndClose);
+        }
 
-            //WriteLines
-            writer.writeLines(lines);
+
+    }
+
+    private void disposeIfReaderEmpty(Set<TFileReader> toRemoveAndClose, Set<TFileReader> tFileReaders) {
+        if (!toRemoveAndClose.isEmpty()) {
+            tFileReaders.removeAll(toRemoveAndClose);
+            closeSet(toRemoveAndClose);
+            toRemoveAndClose.clear();
         }
     }
 
@@ -164,8 +184,7 @@ public class Merger implements Function<Chunks, BigFile> {
     private Set<TFileReader> initReaders(List<Chunk> files) throws IOException {
         Set<TFileReader> tFileReaders = new HashSet<>(files.size());
 
-        for (TFile file : files) {
-            log.info("Reducing Chunk " + file.toAbsolutePath());
+        for (Chunk file : files) {
             TFileReader tFileReader = new TFileReader(file);
             tFileReaders.add(tFileReader);
         }

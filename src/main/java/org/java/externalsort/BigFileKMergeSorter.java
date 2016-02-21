@@ -2,6 +2,7 @@ package org.java.externalsort;
 
 import org.java.nio.BigFile;
 import org.java.nio.TFileReader;
+import org.java.system.MemoryManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +48,7 @@ public class BigFileKMergeSorter implements ExternalSorter {
         TFileReader tFileReader = null;
         try {
             MergeSortInfo mergeSortInfo = mergeSortInfoProvider.buildMergeInfo(bigTextFile, outputFile);
+            log.info("MergeSortInfo "+mergeSortInfo);
             tFileReader = new TFileReader(bigTextFile);
             new SortBigFile(tFileReader, mergeSortInfo).map(chunkenizer).reduce(merger);
 
