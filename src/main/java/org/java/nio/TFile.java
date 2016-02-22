@@ -73,4 +73,10 @@ public class TFile {
     public int hashCode() {
         return file != null ? file.hashCode() : 0;
     }
+
+    @Override public String toString() {
+        return "TFile{" +
+                "file=" + file +
+                '}';
+    }
 }
