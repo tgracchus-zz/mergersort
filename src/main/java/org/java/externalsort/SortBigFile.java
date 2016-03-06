@@ -26,9 +26,5 @@ public class SortBigFile {
         return tFileReader;
     }
 
-    public Chunks map(Function<SortBigFile, Chunks> mapper) {
-        Objects.requireNonNull(mapper);
-        return mapper.apply(this);
-    }
 
 }

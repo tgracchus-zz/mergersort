@@ -45,10 +45,6 @@ public class Chunks {
     }
 
 
-    public BigFile reduce(Function<Chunks, BigFile> reducer) {
-        return reducer.apply(this);
-    }
-
 
     public Chunk get(int i) {
         return chunks.get(i);

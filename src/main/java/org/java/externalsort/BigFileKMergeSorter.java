@@ -2,13 +2,13 @@ package org.java.externalsort;
 
 import org.java.nio.BigFile;
 import org.java.nio.TFileReader;
-import org.java.system.MemoryManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 
 /**
  * Created by ulises on 17/02/16.
@@ -48,9 +48,10 @@ public class BigFileKMergeSorter implements ExternalSorter {
         TFileReader tFileReader = null;
         try {
             MergeSortInfo mergeSortInfo = mergeSortInfoProvider.buildMergeInfo(bigTextFile, outputFile);
-            log.info("MergeSortInfo "+mergeSortInfo);
+            log.info("MergeSortInfo " + mergeSortInfo);
             tFileReader = new TFileReader(bigTextFile);
-            new SortBigFile(tFileReader, mergeSortInfo).map(chunkenizer).reduce(merger);
+
+            Optional.of(new SortBigFile(tFileReader, mergeSortInfo)).map(chunkenizer).map(merger);
 
         } finally {
             if (tFileReader != null) {
