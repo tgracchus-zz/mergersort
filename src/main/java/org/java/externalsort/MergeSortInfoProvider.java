@@ -41,7 +41,6 @@ public class MergeSortInfoProvider {
         List<PassInfo> passes = new ArrayList<>();
 
         if (canBeSolvedByInMemorySort(fileSize, availableMemory)) {
-            passes.add(new PassInfo(pass, 1));
             return new MergeSortInfo(1, chunkSize, passes, outputFile);
         }
 
