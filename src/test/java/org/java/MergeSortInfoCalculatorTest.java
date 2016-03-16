@@ -33,9 +33,7 @@ public class MergeSortInfoCalculatorTest {
         List<PassInfo> passInfos = mergeSortInfo.passes();
 
         Assert.assertEquals(1, mergeSortInfo.chunks());
-        Assert.assertEquals(1, passInfos.size());
-        Assert.assertEquals(1, passInfos.get(0).number());
-        Assert.assertEquals(1, passInfos.get(0).numberOfBuckets());
+        Assert.assertEquals(0, passInfos.size());
     }
 
     @Test
