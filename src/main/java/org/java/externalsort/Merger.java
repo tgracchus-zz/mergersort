@@ -1,19 +1,5 @@
 package org.java.externalsort;
 
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import org.java.lang.Lines;
 import org.java.lang.QuickSort;
 import org.java.lang.SortAlg;
@@ -24,40 +10,38 @@ import org.java.nio.TFileWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
 /**
  * Created by ulises on 20/02/16.
  */
-public class Merger implements Function<Chunks, BigFile> {
+public class Merger {
 
     private final static Logger log = LoggerFactory.getLogger(Merger.class);
 
-    private final Path workingFolder;
     private final SortAlg inMemorySorting;
 
-    public Merger(Path workingFolder, SortAlg inMemorySorting) {
-        this.workingFolder = workingFolder;
+    public Merger(SortAlg inMemorySorting) {
         this.inMemorySorting = inMemorySorting;
     }
 
-    public Merger(Path workingFolder) {
-        this(workingFolder, new QuickSort());
+    public Merger() {
+        this(new QuickSort());
     }
 
-    @Override
-    public BigFile apply(Chunks chunks) {
-        try {
-            return reduce(chunks);
-        } catch (IOException e) {
-            throw new FunctionException(e);
-        }
-    }
-
-    private BigFile reduce(Chunks chunks) throws IOException {
+    public BigFile merge(Chunks chunks, Path workingFolder) throws RuntimeException {
 
         final BigFile result;
         // Merge the map in k chunksInfo
         for (int i = 0; i < chunks.maximumPasses(); i++) {
-            chunks = classifyAndReduce(chunks, i);
+            chunks = classifyAndReduce(chunks, i, workingFolder);
         }
 
         // When no more than one pass, the chunks size must be 1 at this point, simple return it
@@ -82,22 +66,26 @@ public class Merger implements Function<Chunks, BigFile> {
 
                 result = bigFile;
             } catch (FileNotFoundException e) {
-                throw new FunctionException(e);
+                throw new RuntimeException(e);
             } catch (IOException e) {
-                throw new FunctionException(e);
+                throw new RuntimeException(e);
             } finally {
                 closeSet(tFileReaders);
                 writer.close();
             }
 
         }
-
-        Files.move(result.path(), chunks.outputFile().path(), REPLACE_EXISTING);
+        try {
+            Files.move(result.path(), chunks.outputFile().path(), REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         log.info("Result File " + chunks.outputFile().toAbsolutePath());
         return result;
+
     }
 
-    private Chunks classifyAndReduce(Chunks chunksParam, int pass) throws IOException {
+    private Chunks classifyAndReduce(Chunks chunksParam, int pass, Path workingFolder) throws RuntimeException {
 
         // Classify map by groupNumber and reduce
         Map<Integer, List<Chunk>> classification = chunksParam.stream().collect(Collectors.groupingBy(
@@ -117,7 +105,7 @@ public class Merger implements Function<Chunks, BigFile> {
                         .chunkgroup());
             });
 
-            Chunk chunk = merge(chunksClassified, chunkgroup);
+            Chunk chunk = merge(chunksClassified, chunkgroup, workingFolder);
             finalChunks.add(chunk);
             bucketNumber++;
         }
@@ -125,7 +113,7 @@ public class Merger implements Function<Chunks, BigFile> {
         return new Chunks(finalChunks, chunksParam.chunksInfo());
     }
 
-    private Chunk merge(List<Chunk> chunks, int chunkgroup) throws IOException {
+    private Chunk merge(List<Chunk> chunks, int chunkgroup, Path workingFolder) throws RuntimeException {
 
         Set<TFileReader> tFileReaders = initReaders(chunks);
         TFileWriter writer = null;
@@ -134,6 +122,8 @@ public class Merger implements Function<Chunks, BigFile> {
             writer = new TFileWriter(chunk);
             mergeLoop(tFileReaders, writer);
             return chunk;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         } finally {
             closeSet(tFileReaders);
             if (writer != null) {
@@ -142,7 +132,7 @@ public class Merger implements Function<Chunks, BigFile> {
         }
     }
 
-    private void mergeLoop(Set<TFileReader> tFileReaders, TFileWriter writer) throws IOException {
+    private void mergeLoop(Set<TFileReader> tFileReaders, TFileWriter writer) throws RuntimeException {
         Set<TFileReader> toRemoveAndClose = new HashSet<>();
         try {
 
@@ -167,7 +157,8 @@ public class Merger implements Function<Chunks, BigFile> {
                 // WriteLines
                 writer.writeLines(lines);
             }
-
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         } finally {
             closeSet(toRemoveAndClose);
         }
@@ -182,7 +173,7 @@ public class Merger implements Function<Chunks, BigFile> {
         }
     }
 
-    private Set<TFileReader> initReaders(List<Chunk> files) throws IOException {
+    private Set<TFileReader> initReaders(List<Chunk> files) {
         Set<TFileReader> tFileReaders = new HashSet<>(files.size());
 
         for (Chunk file : files) {
@@ -197,7 +188,4 @@ public class Merger implements Function<Chunks, BigFile> {
         tFileReaders.forEach(tFileReader -> tFileReader.close());
     }
 
-    public Path getWorkingFolder() {
-        return workingFolder;
-    }
 }

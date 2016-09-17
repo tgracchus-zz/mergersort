@@ -1,20 +1,17 @@
 package org.java.externalsort;
 
-import org.java.nio.TFileReader;
-
-import java.util.Objects;
-import java.util.function.Function;
+import org.java.nio.BigFile;
 
 /**
  * Created by ulises on 20/02/16.
  */
 public class SortBigFile {
 
-    private final TFileReader tFileReader;
+    private final BigFile bigFile;
     private final MergeSortInfo mergeSortInfo;
 
-    public SortBigFile(TFileReader tFileReader, MergeSortInfo mergeSortInfo) {
-        this.tFileReader = tFileReader;
+    public SortBigFile(BigFile bigFile, MergeSortInfo mergeSortInfo) {
+        this.bigFile = bigFile;
         this.mergeSortInfo = mergeSortInfo;
     }
 
@@ -22,9 +19,8 @@ public class SortBigFile {
         return mergeSortInfo;
     }
 
-    public TFileReader fileReader() {
-        return tFileReader;
+    public BigFile bigFile() {
+        return bigFile;
     }
-
 
 }

@@ -7,7 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.CompletableFuture;
 
 
 /**
@@ -21,7 +24,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         if (args.length == 3 || args.length == 2) {
             BigFile input = new BigFile(Paths.get(args[0]));
-            BigFile outPut = new BigFile(Paths.get(args[1]));
+            Path outPut = Paths.get(args[1]);
 
             boolean deleteTemporalDirs = args.length == 3;
 
@@ -29,10 +32,23 @@ public class Main {
             log.info("Output file: " + outPut.toAbsolutePath());
             log.info("Delete Temporal Dirs: " + deleteTemporalDirs);
 
-            ExternalSorter sorter = new BigFileKMergeSorter();
+            Path chunkDirectory = null;
+            Path mergeDirectory = null;
 
-            sorter.sort(input, outPut, deleteTemporalDirs);
+            try {
+                chunkDirectory = Files.createTempDirectory("chunks");
+                mergeDirectory = Files.createTempDirectory("merge");
 
+                ExternalSorter sorter = new BigFileKMergeSorter();
+                CompletableFuture<BigFile> orderedFile = sorter.sort(input, outPut, chunkDirectory, mergeDirectory);
+                orderedFile.thenAccept(bigFile -> log.info("Result at " + bigFile.toAbsolutePath()));
+
+            } finally {
+                if (deleteTemporalDirs) {
+                    chunkDirectory.toFile().delete();
+                    mergeDirectory.toFile().delete();
+                }
+            }
 
         } else {
             log.info("Usage: .bin/mergesort.sh inputFile outFile deleteTmpDirectories");

@@ -45,8 +45,12 @@ public class TFileReader {
     private TFile tFile;
 
 
-    public TFileReader(TFile tFile, Charset charset, int bufferSize) throws FileNotFoundException {
-        fc = new RandomAccessFile(tFile.file(), "r").getChannel();
+    public TFileReader(TFile tFile, Charset charset, int bufferSize) throws RuntimeException {
+        try {
+            fc = new RandomAccessFile(tFile.file(), "r").getChannel();
+        }catch (FileNotFoundException e){
+            new RuntimeException();
+        }
         this.charsetDecoder = charset.newDecoder();
         this.charsetDecoder.onMalformedInput(CodingErrorAction.IGNORE);
         this.charsetDecoder.onUnmappableCharacter(CodingErrorAction.IGNORE);
@@ -58,11 +62,11 @@ public class TFileReader {
         this.buffer = CharBuffer.allocate(0);
     }
 
-    public TFileReader(TFile tFile, Charset charset) throws FileNotFoundException {
+    public TFileReader(TFile tFile, Charset charset) throws RuntimeException {
         this(tFile, charset, DEFAULT_BUFFER_SIZE);
     }
 
-    public TFileReader(TFile tFile) throws FileNotFoundException {
+    public TFileReader(TFile tFile) throws RuntimeException {
         this(tFile, Charset.defaultCharset(), DEFAULT_BUFFER_SIZE);
     }
 

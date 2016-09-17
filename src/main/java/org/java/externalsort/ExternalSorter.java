@@ -3,6 +3,8 @@ package org.java.externalsort;
 import org.java.nio.BigFile;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Created by ulises on 17/02/16.
@@ -16,5 +18,5 @@ import java.io.IOException;
  */
 public interface ExternalSorter {
 
-    void sort(BigFile bigTextFile, BigFile outputFile, boolean deleteTemporalDirs) throws IOException;
+    CompletableFuture<BigFile> sort(BigFile bigTextFile, Path outputFile, Path chunkDirectory, Path mergeDirectory) throws IOException;
 }

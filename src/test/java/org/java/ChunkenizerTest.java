@@ -3,7 +3,6 @@ package org.java;
 
 import org.java.externalsort.*;
 import org.java.nio.BigFile;
-import org.java.nio.TFileReader;
 import org.java.system.MemoryManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +30,6 @@ public class ChunkenizerTest {
 
     @Test
     public void testMoreChunks() throws Exception {
-        TFileReader tFileReader = new TFileReader(inFile);
         MemoryManager memoryManager = mock(MemoryManager.class);
 
         when(memoryManager.availableMemory()).thenReturn(MemoryManager.MEGABYTE / 2);
@@ -40,29 +38,20 @@ public class ChunkenizerTest {
         MergeSortInfo mergeSortInfo = mergeSortInfoProvider.buildMergeInfo(inFile, mock(BigFile.class));
 
 
-        try {
-            Chunks chunkList = chunkenizer.apply(new SortBigFile(tFileReader, mergeSortInfo));
-            assertEquals(mergeSortInfo.chunks(), chunkList.size());
+        Chunks chunkList = chunkenizer.chunkenize(new SortBigFile(inFile, mergeSortInfo));
+        assertEquals(mergeSortInfo.chunks(), chunkList.size());
 
-
-        } finally {
-            tFileReader.close();
-        }
 
     }
 
     @Test
     public void testOneChunks() throws Exception {
-        TFileReader tFileReader = new TFileReader(inFile);
 
         MergeSortInfo mergeSortInfo = new MergeSortInfo(1, inFile.size(), Arrays.asList(new PassInfo(1, 1)), mock(BigFile.class));
 
-        try {
-            Chunks chunkList = chunkenizer.apply(new SortBigFile(tFileReader, mergeSortInfo));
-            assertEquals(mergeSortInfo.chunks(), chunkList.size());
 
-        } finally {
-            tFileReader.close();
-        }
+        Chunks chunkList = chunkenizer.chunkenize(new SortBigFile(inFile, mergeSortInfo));
+        assertEquals(mergeSortInfo.chunks(), chunkList.size());
+
     }
 }

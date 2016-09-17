@@ -5,6 +5,7 @@ import org.java.system.MemoryManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class MergeSortInfoProvider {
         this.memoryManager = new MemoryManager();
     }
 
-    public MergeSortInfo buildMergeInfo(BigFile bigTextFile, BigFile outputFile) {
+    public MergeSortInfo buildMergeInfo(BigFile bigTextFile, Path outputFile) {
         long fileSize = bigTextFile.size();
         long availableMemory = memoryManager.availableMemory();
         int pass = 1;
