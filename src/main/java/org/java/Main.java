@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -20,7 +21,7 @@ public class Main {
     private final static Logger log = LoggerFactory.getLogger(Main.class);
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
         if (args.length == 3 || args.length == 2) {
             BigFile input = new BigFile(Paths.get(args[0]));
             Path outPut = Paths.get(args[1]);
@@ -40,7 +41,7 @@ public class Main {
 
                 ExternalSorter sorter = new BigFileKMergeSorter();
                 sorter.sort(input, outPut, chunkDirectory, mergeDirectory)
-                        .thenAccept(bigFile -> log.info("Result at " + bigFile.toAbsolutePath()));
+                        .thenAccept(bigFile -> log.info("Result at " + bigFile.toAbsolutePath())).get();
 
             } finally {
                 if (deleteTemporalDirs) {
