@@ -8,6 +8,7 @@ import org.java.system.MemoryManager;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -29,7 +30,7 @@ public class MergeSortInfoCalculatorTest {
         BigFile file = mock(BigFile.class);
         when(file.size()).thenReturn(MemoryManager.MEGABYTE);
 
-        MergeSortInfo mergeSortInfo = calculator.buildMergeInfo(file, mock(BigFile.class));
+        MergeSortInfo mergeSortInfo = calculator.buildMergeInfo(file, mock(Path.class));
         List<PassInfo> passInfos = mergeSortInfo.passes();
 
         Assert.assertEquals(1, mergeSortInfo.chunks());
@@ -45,7 +46,7 @@ public class MergeSortInfoCalculatorTest {
         BigFile file = mock(BigFile.class);
         when(file.size()).thenReturn((long) (MemoryManager.MEGABYTE * 1.5));
 
-        MergeSortInfo mergeSortInfo = calculator.buildMergeInfo(file, mock(BigFile.class));
+        MergeSortInfo mergeSortInfo = calculator.buildMergeInfo(file, mock(Path.class));
         List<PassInfo> passInfos = mergeSortInfo.passes();
 
         Assert.assertEquals(2, mergeSortInfo.chunks());
@@ -63,7 +64,7 @@ public class MergeSortInfoCalculatorTest {
         BigFile file = mock(BigFile.class);
         when(file.size()).thenReturn(MemoryManager.MEGABYTE * 10);
 
-        MergeSortInfo mergeSortInfo = calculator.buildMergeInfo(file, mock(BigFile.class));
+        MergeSortInfo mergeSortInfo = calculator.buildMergeInfo(file, mock(Path.class));
         List<PassInfo> passInfos = mergeSortInfo.passes();
 
         Assert.assertEquals(1, mergeSortInfo.maximumPasses());
@@ -86,7 +87,7 @@ public class MergeSortInfoCalculatorTest {
             BigFile file = mock(BigFile.class);
             when(file.size()).thenReturn(MemoryManager.MEGABYTE * 500 * k);
 
-            MergeSortInfo mergeSortInfo = calculator.buildMergeInfo(file, mock(BigFile.class));
+            MergeSortInfo mergeSortInfo = calculator.buildMergeInfo(file, mock(Path.class));
             List<PassInfo> passInfos = mergeSortInfo.passes();
 
             Assert.assertEquals(1, mergeSortInfo.maximumPasses());

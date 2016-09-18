@@ -4,12 +4,14 @@ package org.java;
 import org.java.externalsort.*;
 import org.java.nio.BigFile;
 import org.java.system.MemoryManager;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.concurrent.CompletableFuture;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -21,21 +23,15 @@ import static org.mockito.Mockito.when;
 public class BigFileKMergeSorterTest {
 
     private BigFile inFile;
-    private BigFile outFile;
+    private Path outFile;
 
     @Before
     public void setUp() throws Exception {
         inFile = new BigFile("src/test/resources/file.txt");
-        outFile = new BigFile("src/test/resources/outFile.txt");
+        outFile = Paths.get("src/test/resources/outFile.txt");
 
     }
 
-    @After
-    @Ignore
-    public void tearDown() throws Exception {
-        outFile.delete();
-
-    }
 
     @Test
     @Ignore
@@ -45,14 +41,17 @@ public class BigFileKMergeSorterTest {
         when(memoryManager.availableMemory()).thenReturn(MemoryManager.MEGABYTE / 2);
 
         MergeSortInfoProvider mergeSortInfoProvider = new MergeSortInfoProvider(memoryManager);
-        Chunkenizer chunkenizer = new Chunkenizer(Files.createTempDirectory("chunks"));
-        Merger merger = new Merger(Files.createTempDirectory("merge"));
+        Chunkenizer chunkenizer = new Chunkenizer();
+        Merger merger = new Merger();
 
         ExternalSorter sorter = new BigFileKMergeSorter(mergeSortInfoProvider, chunkenizer, merger);
 
-        sorter.sort(inFile, outFile, true);
+        CompletableFuture<BigFile> result = sorter.sort(inFile, outFile, Files.createTempDirectory("chunks"), Files.createTempDirectory("merge"));
+        result.thenAccept(bigFile -> {
+            assertTrue(bigFile.exists());
+            bigFile.delete();
+        });
 
-        assertTrue(outFile.exists());
 
     }
 
@@ -60,9 +59,12 @@ public class BigFileKMergeSorterTest {
     public void testOneChunks() throws Exception {
         ExternalSorter sorter = new BigFileKMergeSorter();
 
-        sorter.sort(inFile, outFile, true);
+        CompletableFuture<BigFile> result = sorter.sort(inFile, outFile, Files.createTempDirectory("chunks"), Files.createTempDirectory("merge"));
+        result.thenAccept(bigFile -> {
+            System.out.println(bigFile.path());
+            assertTrue(bigFile.exists());
+            bigFile.delete();
+        });
 
-        System.out.println(outFile.path());
-        assertTrue(outFile.exists());
     }
 }

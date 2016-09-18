@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.concurrent.CompletableFuture;
 
 
 /**
@@ -40,8 +39,8 @@ public class Main {
                 mergeDirectory = Files.createTempDirectory("merge");
 
                 ExternalSorter sorter = new BigFileKMergeSorter();
-                CompletableFuture<BigFile> orderedFile = sorter.sort(input, outPut, chunkDirectory, mergeDirectory);
-                orderedFile.thenAccept(bigFile -> log.info("Result at " + bigFile.toAbsolutePath()));
+                sorter.sort(input, outPut, chunkDirectory, mergeDirectory)
+                        .thenAccept(bigFile -> log.info("Result at " + bigFile.toAbsolutePath()));
 
             } finally {
                 if (deleteTemporalDirs) {

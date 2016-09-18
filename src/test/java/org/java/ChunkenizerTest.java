@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
@@ -25,7 +26,7 @@ public class ChunkenizerTest {
     @Before
     public void setUp() throws Exception {
         inFile = new BigFile("src/test/resources/file.txt");
-        chunkenizer = new Chunkenizer(Files.createTempDirectory("chunks"));
+        chunkenizer = new Chunkenizer();
     }
 
     @Test
@@ -35,10 +36,10 @@ public class ChunkenizerTest {
         when(memoryManager.availableMemory()).thenReturn(MemoryManager.MEGABYTE / 2);
 
         MergeSortInfoProvider mergeSortInfoProvider = new MergeSortInfoProvider(memoryManager);
-        MergeSortInfo mergeSortInfo = mergeSortInfoProvider.buildMergeInfo(inFile, mock(BigFile.class));
+        MergeSortInfo mergeSortInfo = mergeSortInfoProvider.buildMergeInfo(inFile, mock(Path.class));
 
 
-        Chunks chunkList = chunkenizer.chunkenize(new SortBigFile(inFile, mergeSortInfo));
+        Chunks chunkList = chunkenizer.chunkenize(new SortBigFile(inFile, mergeSortInfo), Files.createTempDirectory("chunks"));
         assertEquals(mergeSortInfo.chunks(), chunkList.size());
 
 
@@ -47,10 +48,10 @@ public class ChunkenizerTest {
     @Test
     public void testOneChunks() throws Exception {
 
-        MergeSortInfo mergeSortInfo = new MergeSortInfo(1, inFile.size(), Arrays.asList(new PassInfo(1, 1)), mock(BigFile.class));
+        MergeSortInfo mergeSortInfo = new MergeSortInfo(1, inFile.size(), Arrays.asList(new PassInfo(1, 1)), mock(Path.class));
 
 
-        Chunks chunkList = chunkenizer.chunkenize(new SortBigFile(inFile, mergeSortInfo));
+        Chunks chunkList = chunkenizer.chunkenize(new SortBigFile(inFile, mergeSortInfo), Files.createTempDirectory("chunks"));
         assertEquals(mergeSortInfo.chunks(), chunkList.size());
 
     }

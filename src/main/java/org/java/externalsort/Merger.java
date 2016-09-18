@@ -76,7 +76,7 @@ public class Merger {
 
         }
         try {
-            Files.move(result.path(), chunks.outputFile().path(), REPLACE_EXISTING);
+            Files.move(result.path(), chunks.outputFile(), REPLACE_EXISTING);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

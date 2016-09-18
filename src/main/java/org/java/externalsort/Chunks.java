@@ -2,6 +2,7 @@ package org.java.externalsort;
 
 import org.java.nio.BigFile;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -54,7 +55,7 @@ public class Chunks {
         return mergeSortInfo.maximumPasses();
     }
 
-    public BigFile outputFile() {
+    public Path outputFile() {
         return mergeSortInfo.outputFile();
     }
 }
