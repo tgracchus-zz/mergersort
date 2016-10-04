@@ -1,4 +1,4 @@
-package org.java.externalsort;
+package org.java.esort.model;
 
 /**
  * Created by ulises on 19/02/16.

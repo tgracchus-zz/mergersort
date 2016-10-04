@@ -1,8 +1,6 @@
-package org.java.nio;
+package org.java.esort.model;
 
 import java.nio.file.Path;
-import java.util.Objects;
-import java.util.function.Function;
 
 /**
  * Created by ulises on 17/02/16.

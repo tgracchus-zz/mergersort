@@ -1,6 +1,6 @@
-package org.java.externalsort;
+package org.java.esort;
 
-import org.java.nio.BigFile;
+import org.java.esort.model.BigFile;
 
 import java.io.IOException;
 import java.nio.file.Path;

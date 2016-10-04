@@ -1,8 +1,8 @@
 package org.java;
 
-import org.java.lang.TString;
-import org.java.nio.TFile;
-import org.java.nio.TFileReader;
+import org.java.esort.model.TString;
+import org.java.esort.model.TFile;
+import org.java.esort.model.TFileReader;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

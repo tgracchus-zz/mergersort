@@ -2,7 +2,7 @@ package org.java;
 
 import static org.junit.Assert.assertEquals;
 
-import org.java.lang.TString;
+import org.java.esort.model.TString;
 import org.junit.Test;
 
 /**

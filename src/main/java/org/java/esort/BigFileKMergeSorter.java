@@ -1,7 +1,9 @@
-package org.java.externalsort;
+package org.java.esort;
 
-import org.java.nio.BigFile;
-import org.java.nio.TFileReader;
+import org.java.esort.model.BigFile;
+import org.java.esort.model.MergeSortInfo;
+import org.java.esort.model.SortBigFile;
+import org.java.esort.model.TFileReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

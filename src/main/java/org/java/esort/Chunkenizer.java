@@ -1,10 +1,9 @@
-package org.java.externalsort;
+package org.java.esort;
 
-import org.java.lang.Lines;
-import org.java.lang.QuickSort;
-import org.java.lang.SortAlg;
-import org.java.nio.TFileReader;
-import org.java.nio.TFileWriter;
+import org.java.esort.model.*;
+import org.java.esort.model.Lines;
+import org.java.sort.QuickSort;
+import org.java.sort.SortAlg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +46,7 @@ public class Chunkenizer {
                     break;
                 }
 
-                lines = lines.map(inMemorySorting);
+                lines = lines.map(lines1 -> inMemorySorting.sort(lines1));
 
                 TFileWriter tFileWriter = null;
                 try {

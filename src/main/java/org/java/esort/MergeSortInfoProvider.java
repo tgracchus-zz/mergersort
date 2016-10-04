@@ -1,7 +1,8 @@
-package org.java.externalsort;
+package org.java.esort;
 
-import org.java.nio.BigFile;
-import org.java.system.MemoryManager;
+import org.java.esort.model.BigFile;
+import org.java.esort.model.MergeSortInfo;
+import org.java.esort.model.PassInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

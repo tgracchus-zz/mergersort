@@ -1,8 +1,8 @@
 package org.java;
 
-import org.java.externalsort.BigFileKMergeSorter;
-import org.java.externalsort.ExternalSorter;
-import org.java.nio.BigFile;
+import org.java.esort.BigFileKMergeSorter;
+import org.java.esort.ExternalSorter;
+import org.java.esort.model.BigFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,6 +1,4 @@
-package org.java.externalsort;
-
-import org.java.nio.BigFile;
+package org.java.esort.model;
 
 import java.nio.file.Path;
 import java.util.List;

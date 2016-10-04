@@ -1,7 +1,7 @@
 package org.java;
 
-import org.java.externalsort.Chunk;
-import org.java.nio.TFile;
+import org.java.esort.model.Chunk;
+import org.java.esort.model.TFile;
 import org.junit.Before;
 import org.junit.Test;
 

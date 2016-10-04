@@ -1,9 +1,7 @@
-package org.java.nio;
+package org.java.esort.model;
 
-import org.java.lang.Lines;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.java.lang.TString;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -12,7 +10,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
-import java.util.List;
 
 /**
  * Not Thread Safe Class !!!

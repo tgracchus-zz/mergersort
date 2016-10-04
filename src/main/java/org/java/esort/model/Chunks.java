@@ -1,12 +1,8 @@
-package org.java.externalsort;
-
-import org.java.nio.BigFile;
+package org.java.esort.model;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 /**

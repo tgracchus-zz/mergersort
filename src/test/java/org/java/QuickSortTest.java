@@ -1,8 +1,8 @@
 package org.java;
 
-import org.java.lang.Lines;
-import org.java.lang.QuickSort;
-import org.java.lang.TString;
+import org.java.esort.model.Lines;
+import org.java.sort.QuickSort;
+import org.java.esort.model.TString;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,7 +42,7 @@ public class QuickSortTest {
 
     @Test
     public void testMergerSort() throws Exception {
-        Lines sortedLines = mergeSort.apply(new Lines(lines));
+        Lines sortedLines = mergeSort.sort(new Lines(lines));
         assertEquals(expectedResult, sortedLines.getLines());
     }
 }

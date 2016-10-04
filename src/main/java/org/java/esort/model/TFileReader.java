@@ -1,7 +1,5 @@
-package org.java.nio;
+package org.java.esort.model;
 
-import org.java.lang.Lines;
-import org.java.lang.TString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

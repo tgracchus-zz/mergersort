@@ -1,9 +1,9 @@
 package org.java;
 
 
-import org.java.externalsort.*;
-import org.java.nio.BigFile;
-import org.java.system.MemoryManager;
+import org.java.esort.*;
+import org.java.esort.model.*;
+import org.java.esort.MemoryManager;
 import org.junit.Before;
 import org.junit.Test;
 

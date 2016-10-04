@@ -1,4 +1,7 @@
-package org.java.lang;
+package org.java.sort;
+
+import org.java.esort.model.Lines;
+import org.java.esort.model.TString;
 
 import java.util.ArrayDeque;
 import java.util.Collections;
@@ -10,9 +13,10 @@ import java.util.concurrent.ThreadLocalRandom;
  * Created by ulises on 20/02/16.
  * Randomized Iterative QuickSort algorithm for in-memory sorting
  */
-public class QuickSort implements SortAlg<Lines, Lines> {
+public class QuickSort implements SortAlg {
+
     @Override
-    public Lines apply(Lines lines) {
+    public Lines sort(Lines lines) {
         List<TString> tStrings = lines.getLines();
         quicksort(tStrings, 0, tStrings.size() - 1);
         return lines;

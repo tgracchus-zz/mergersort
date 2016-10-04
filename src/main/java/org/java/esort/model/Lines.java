@@ -1,4 +1,4 @@
-package org.java.lang;
+package org.java.esort.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,21 +39,4 @@ public class Lines {
     }
 
 
-    public static class LinesBuilder {
-
-        private final List<TString> sortedList;
-
-        public LinesBuilder(int size) {
-            this.sortedList = new ArrayList<>(size);
-        }
-
-        public LinesBuilder add(TString tString) {
-            sortedList.add(tString);
-            return this;
-        }
-
-        public Lines build() {
-            return new Lines(sortedList);
-        }
-    }
 }

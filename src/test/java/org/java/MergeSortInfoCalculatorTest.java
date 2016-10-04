@@ -1,10 +1,10 @@
 package org.java;
 
-import org.java.externalsort.MergeSortInfo;
-import org.java.externalsort.MergeSortInfoProvider;
-import org.java.externalsort.PassInfo;
-import org.java.nio.BigFile;
-import org.java.system.MemoryManager;
+import org.java.esort.model.MergeSortInfo;
+import org.java.esort.MergeSortInfoProvider;
+import org.java.esort.model.PassInfo;
+import org.java.esort.model.BigFile;
+import org.java.esort.MemoryManager;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -1,10 +1,8 @@
-package org.java.externalsort;
+package org.java.esort.model;
 
-import org.java.nio.TFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**

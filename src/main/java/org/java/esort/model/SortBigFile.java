@@ -1,6 +1,4 @@
-package org.java.externalsort;
-
-import org.java.nio.BigFile;
+package org.java.esort.model;
 
 /**
  * Created by ulises on 20/02/16.

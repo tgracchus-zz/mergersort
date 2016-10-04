@@ -1,12 +1,12 @@
 package org.java;
 
-import org.java.lang.Lines;
+import org.java.esort.model.Lines;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.java.lang.TString;
-import org.java.nio.TFile;
-import org.java.nio.TFileWriter;
+import org.java.esort.model.TString;
+import org.java.esort.model.TFile;
+import org.java.esort.model.TFileWriter;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
